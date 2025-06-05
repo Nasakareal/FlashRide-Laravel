@@ -5,12 +5,10 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API",
-    "\\app\\Models",
-    "\\app\\Providers",
-    "\\database",
-    "\\database\\migrations",
+    "\\resources",
+    "\\resources\\views",
     "\\routes"
   ],
-  "SelectedNode": "\\database\\migrations\\2025_05_26_193758_create_permission_tables.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\VehicleController.php",
   "PreviewInSolutionExplorer": false
 }

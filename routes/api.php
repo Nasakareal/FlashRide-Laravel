@@ -14,20 +14,31 @@ use App\Http\Controllers\API\VehicleController;
 |--------------------------------------------------------------------------
 */
 
+// Obtener usuario autenticado (debug)
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Autenticación
+// Autenticación pública
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Rutas protegidas por token (usuario autenticado)
 Route::middleware('auth:sanctum')->group(function () {
+
     // Perfil y seguridad
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
-    // Viajes
+    // Gestión de choferes (solo admin debería usar estas rutas)
+    Route::get('/drivers', [AuthController::class, 'listDrivers']);
+    Route::post('/drivers', [AuthController::class, 'registerDriver']);
+
+    // Gestión de vehículos
+    Route::get('/vehicles', [VehicleController::class, 'index']);
+    Route::post('/vehicles', [VehicleController::class, 'store']);
+
+    // Gestión de viajes
     Route::get('/rides', [RideController::class, 'index']);
     Route::post('/rides', [RideController::class, 'store']);
     Route::get('/rides/pending', [RideController::class, 'pendingRides']);
@@ -36,15 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides/{id}/accept', [RideController::class, 'accept']);
     Route::post('/rides/{id}/complete', [RideController::class, 'complete']);
 
-    // Ubicación del conductor
+    // Actualización de ubicación del conductor
     Route::post('/location/update', [RideController::class, 'updateLocation']);
 
     // Pagos
     Route::post('/payments', [PaymentController::class, 'store']);
 
-    // Vehículos
-    Route::post('/vehicles', [VehicleController::class, 'store']);
-
-    // Emergencias
+    // Botón de pánico / emergencia
     Route::post('/panic', [EmergencyController::class, 'store']);
 });

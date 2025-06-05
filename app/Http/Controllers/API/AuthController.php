@@ -105,4 +105,42 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Contraseña actualizada con éxito']);
     }
+
+    public function registerDriver(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|unique:users,phone',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'password' => bcrypt($validated['password']),
+            'role' => 'driver',
+        ]);
+
+        return response()->json([
+            'message' => 'Chofer registrado correctamente.',
+            'data' => $user,
+        ], 201);
+    }
+
+    public function listDrivers()
+    {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        $drivers = User::where('role', 'driver')->get();
+        return response()->json($drivers);
+    }
+
 }
