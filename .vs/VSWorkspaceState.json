@@ -5,10 +5,13 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API",
+    "\\app\\Models",
+    "\\database",
+    "\\database\\migrations",
     "\\resources",
     "\\resources\\views",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\API\\VehicleController.php",
+  "SelectedNode": "\\database\\migrations\\2025_06_06_032932_create_trips_table.php",
   "PreviewInSolutionExplorer": false
 }
