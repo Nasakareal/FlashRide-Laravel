@@ -11,6 +11,6 @@
     "\\resources\\views",
     "\\routes"
   ],
-  "SelectedNode": "\\config\\sanctum.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\VehicleController.php",
   "PreviewInSolutionExplorer": false
 }

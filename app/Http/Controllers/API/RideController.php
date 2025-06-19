@@ -177,4 +177,12 @@ class RideController extends Controller
             'data'    => $ride,
         ]);
     }
+
+    public function nearbyDrivers()
+    {
+        return User::where('role', 'driver')
+            ->whereNotNull('lat')
+            ->whereNotNull('lng')
+            ->get(['id', 'name', 'lat', 'lng']);
+    }
 }

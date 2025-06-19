@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/drivers/{id}/details', [DriverController::class, 'details']);
     Route::put('/drivers/{id}',         [DriverController::class, 'update']);
     Route::delete('/drivers/{id}',      [DriverController::class, 'destroy']);
+    Route::get('/drivers/nearby', [RideController::class, 'nearbyDrivers']);
+
 
     // 2.3) GESTIÓN DE VEHÍCULOS
     Route::get('/vehicles',  [VehicleController::class, 'index']);
