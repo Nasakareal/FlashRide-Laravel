@@ -185,4 +185,24 @@ class RideController extends Controller
             ->whereNotNull('lng')
             ->get(['id', 'name', 'lat', 'lng']);
     }
+
+    public function updateGlobalLocation(Request $request)
+    {
+        $request->validate([
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+        ]);
+
+        $user = Auth::user();
+
+        if ($user->role !== 'driver') {
+            return response()->json(['message' => 'Solo los conductores pueden actualizar ubicación.'], 403);
+        }
+
+        $user->lat = $request->lat;
+        $user->lng = $request->lng;
+        $user->save();
+
+        return response()->json(['message' => 'Ubicación global actualizada']);
+    }
 }

@@ -7,10 +7,12 @@
     "\\app\\Http\\Controllers\\API",
     "\\app\\Models",
     "\\config",
+    "\\database",
+    "\\database\\migrations",
     "\\resources",
     "\\resources\\views",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\API\\VehicleController.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\RideController.php",
   "PreviewInSolutionExplorer": false
 }
