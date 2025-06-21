@@ -128,27 +128,35 @@ class RideController extends Controller
      // Actualizar ubicación del conductor en tiempo real.
     public function updateLocation(Request $request)
     {
-        $request->validate([
-            'ride_id'     => 'required|exists:rides,id',
-            'driver_lat'  => 'required|numeric',
-            'driver_lng'  => 'required|numeric',
-        ]);
+        try {
+            $request->validate([
+                'ride_id'     => 'required|exists:rides,id',
+                'driver_lat'  => 'required|numeric',
+                'driver_lng'  => 'required|numeric',
+            ]);
 
-        $ride = Ride::findOrFail($request->ride_id);
-        $user = Auth::user();
+            $ride = Ride::findOrFail($request->ride_id);
+            $user = Auth::user();
 
-        if ($user->role !== 'driver' || $ride->driver_id !== $user->id) {
-            return response()->json(['message' => 'No tienes permiso para actualizar esta ubicación.'], 403);
+            if ($user->role !== 'driver' || $ride->driver_id !== $user->id) {
+                return response()->json(['message' => 'No tienes permiso para actualizar esta ubicación.'], 403);
+            }
+
+            $ride->driver_lat = $request->driver_lat;
+            $ride->driver_lng = $request->driver_lng;
+            $ride->save();
+
+            return response()->json([
+                'message' => 'Ubicación del conductor actualizada.',
+                'data'    => $ride,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Error al actualizar ubicación',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTrace()[0]
+            ], 500);
         }
-
-        $ride->driver_lat = $request->driver_lat;
-        $ride->driver_lng = $request->driver_lng;
-        $ride->save();
-
-        return response()->json([
-            'message' => 'Ubicación del conductor actualizada.',
-            'data'    => $ride,
-        ]);
     }
 
      // Actualizar estado o datos del viaje (genérico).
