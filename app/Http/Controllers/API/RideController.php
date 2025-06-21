@@ -183,12 +183,18 @@ class RideController extends Controller
     public function nearbyDrivers()
     {
         try {
-            return User::where('role', 'driver')
+            $conductores = User::where('role', 'driver')
                 ->whereNotNull('lat')
                 ->whereNotNull('lng')
                 ->get(['id', 'name', 'lat', 'lng']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return response()->json($conductores);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Error interno',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTrace()[0]
+            ], 500);
         }
     }
 
