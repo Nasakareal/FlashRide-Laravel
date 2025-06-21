@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ride;
+use App\Models\User;
+
 
 class RideController extends Controller
 {
@@ -180,10 +182,14 @@ class RideController extends Controller
 
     public function nearbyDrivers()
     {
-        return User::where('role', 'driver')
-            ->whereNotNull('lat')
-            ->whereNotNull('lng')
-            ->get(['id', 'name', 'lat', 'lng']);
+        try {
+            return User::where('role', 'driver')
+                ->whereNotNull('lat')
+                ->whereNotNull('lng')
+                ->get(['id', 'name', 'lat', 'lng']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function updateGlobalLocation(Request $request)
