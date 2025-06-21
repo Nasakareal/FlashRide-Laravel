@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\RideController.php",
               "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php",
               "RelativeToolTip": "app\\Http\\Controllers\\API\\RideController.php",
-              "ViewState": "AgIAAKUAAAAAAAAAAAAAALYAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAAAIwAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-06-19T21:10:11.462Z",
               "EditorCaption": ""
@@ -63,8 +63,7 @@
               "RelativeToolTip": "app\\Models\\User.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-06-06T03:26:19.576Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-06T03:26:19.576Z"
             },
             {
               "$type": "Document",
