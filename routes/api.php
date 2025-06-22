@@ -49,6 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/rides/{id}',            [RideController::class, 'update']);
     Route::post('/rides/{id}/accept',    [RideController::class, 'accept']);
     Route::post('/rides/{id}/complete',  [RideController::class, 'complete']);
+    Route::post('/rides/{id}/fase', [RideController::class, 'updateFase']);
+    Route::post('/rides/estimate', [RideController::class, 'estimateCost']);
 
 
     // 2.5) ACTUALIZACIÓN DE UBICACIÓN DEL CONDUCTOR
@@ -56,11 +58,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/location/global', [RideController::class, 'updateGlobalLocation']);
     Route::get('/drivers/nearby',   [RideController::class, 'nearbyDrivers']);
 
+     // 2.6) MARCAR CONDUCTOR ONLINE/OFFLINE
+    Route::post('/users/online',  [AuthController::class, 'markOnline']);
+    Route::post('/users/offline', [AuthController::class, 'markOffline']);
 
-    // 2.6) PAGOS
+
+
+    // 2.7) PAGOS
     Route::post('/payments', [PaymentController::class, 'store']);
 
 
-    // 2.7) BOTÓN DE PÁNICO / EMERGENCIA
+    // 2.8) BOTÓN DE PÁNICO / EMERGENCIA
     Route::post('/panic', [EmergencyController::class, 'store']);
 });

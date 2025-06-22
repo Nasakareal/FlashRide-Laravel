@@ -15,5 +15,6 @@ class Ride extends Model
         'end_lng',
         'estimated_cost',
         'status',
+        'fase',
     ];
 }

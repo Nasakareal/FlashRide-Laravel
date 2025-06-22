@@ -1,9 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\database",
-    "\\database\\migrations"
+    "\\app",
+    "\\app\\Console",
+    "\\app\\Console\\Commands",
+    "\\app\\Http",
+    "\\app\\Http\\Controllers",
+    "\\app\\Http\\Controllers\\API"
   ],
-  "SelectedNode": "\\database\\migrations\\2025_06_21_022753_add_driver_coords_to_rides_table.php",
+  "SelectedNode": "\\app\\Console\\Commands\\CleanInactiveDrivers.php",
   "PreviewInSolutionExplorer": false
 }
