@@ -283,9 +283,10 @@ class RideController extends Controller
     {
         try {
             $conductores = User::where('role', 'driver')
+                ->where('is_online', true)
                 ->whereNotNull('lat')
                 ->whereNotNull('lng')
-                ->get(['id', 'name', 'lat', 'lng']);
+                ->get(['id', 'name', 'lat', 'lng', 'is_online']);
 
             return response()->json($conductores);
         } catch (\Throwable $e) {
