@@ -8,6 +8,6 @@
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API"
   ],
-  "SelectedNode": "\\app\\Console\\Commands\\CleanInactiveDrivers.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\AuthController.php",
   "PreviewInSolutionExplorer": false
 }
