@@ -41,17 +41,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/vehicles', [VehicleController::class, 'store']);
 
     
-    // 2.4) GESTIÓN DE VIAJES (RIDES)
-    Route::get('/rides',                 [RideController::class, 'index']);
-    Route::post('/rides',                [RideController::class, 'store']);
-    Route::get('/rides/pending',         [RideController::class, 'pendingRides']);
-    Route::get('/rides/{id}',            [RideController::class, 'show']);
-    Route::put('/rides/{id}',            [RideController::class, 'update']);
-    Route::post('/rides/{id}/accept',    [RideController::class, 'accept']);
-    Route::post('/rides/{id}/complete',  [RideController::class, 'complete']);
-    Route::post('/rides/{id}/fase', [RideController::class, 'updateFase']);
-    Route::post('/rides/estimate', [RideController::class, 'estimateCost']);
-    Route::get('/rides/active', [RideController::class, 'active']);
+  // 2.4) GESTIÓN DE VIAJES (RIDES)
+Route::get('/rides/active',          [RideController::class, 'active']);
+Route::get('/rides',                 [RideController::class, 'index']);
+Route::post('/rides',                [RideController::class, 'store']);
+Route::get('/rides/pending',         [RideController::class, 'pendingRides']);
+
+Route::get('/rides/{id}',            [RideController::class, 'show'])
+      ->whereNumber('id');
+
+Route::put('/rides/{id}',            [RideController::class, 'update']);
+Route::post('/rides/{id}/accept',    [RideController::class, 'accept']);
+Route::post('/rides/{id}/complete',  [RideController::class, 'complete']);
+Route::post('/rides/{id}/fase',      [RideController::class, 'updateFase']);
+
+Route::post('/rides/estimate',       [RideController::class, 'estimateCost']);
+
 
 
     // 2.5) ACTUALIZACIÓN DE UBICACIÓN DEL CONDUCTOR
