@@ -343,4 +343,23 @@ class RideController extends Controller
             'data' => $ride,
         ]);
     }
+
+    // Obtener el viaje activo actual del usuario autenticado
+    public function active()
+    {
+        $user = Auth::user();
+
+        $ride = Ride::where(function ($q) use ($user) {
+                    $q->where('passenger_id', $user->id)
+                      ->orWhere('driver_id', $user->id);
+                })
+                ->whereNotIn('fase', ['completado'])->latest()->first();
+
+        if (! $ride) {
+            return response()->json(['message' => 'Viaje no encontrado'], 404);
+        }
+
+        return response()->json($ride);
+    }
+
 }

@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides/{id}/complete',  [RideController::class, 'complete']);
     Route::post('/rides/{id}/fase', [RideController::class, 'updateFase']);
     Route::post('/rides/estimate', [RideController::class, 'estimateCost']);
+    Route::get('/rides/active', [RideController::class, 'active']);
 
 
     // 2.5) ACTUALIZACIÓN DE UBICACIÓN DEL CONDUCTOR
