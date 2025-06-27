@@ -208,6 +208,7 @@ class RideController extends Controller
         }
 
         $ride->status = 'completed';
+        $ride->fase = 'completado';
         $ride->save();
 
         return response()->json([
@@ -215,6 +216,7 @@ class RideController extends Controller
             'data'    => $ride,
         ]);
     }
+
 
      // Actualizar ubicación del conductor en tiempo real.
     public function updateLocation(Request $request)
