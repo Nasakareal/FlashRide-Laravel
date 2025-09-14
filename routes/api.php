@@ -8,6 +8,8 @@ use App\Http\Controllers\API\EmergencyController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\VehicleController;
 use App\Http\Controllers\API\DriverController;
+use App\Http\Controllers\API\TransitController;
+
 
 // Ruta de depuración: obtener usuario autenticado
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -47,8 +49,7 @@ Route::get('/rides',                 [RideController::class, 'index']);
 Route::post('/rides',                [RideController::class, 'store']);
 Route::get('/rides/pending',         [RideController::class, 'pendingRides']);
 
-Route::get('/rides/{id}',            [RideController::class, 'show'])
-      ->whereNumber('id');
+Route::get('/rides/{id}',            [RideController::class, 'show'])->whereNumber('id');
 
 Route::put('/rides/{id}',            [RideController::class, 'update']);
 Route::post('/rides/{id}/accept',    [RideController::class, 'accept']);
@@ -77,3 +78,13 @@ Route::post('/rides/estimate',       [RideController::class, 'estimateCost']);
     // 2.8) BOTÓN DE PÁNICO / EMERGENCIA
     Route::post('/panic', [EmergencyController::class, 'store']);
 });
+
+// TRANSPORTE PÚBLICO (LECTURA PÚBLICA)
+Route::prefix('transit')->group(function () {
+    Route::get('/routes',      [TransitController::class, 'routes']);
+    Route::get('/routes/{id}', [TransitController::class, 'routeShow']);
+    Route::get('/vehicles',    [TransitController::class, 'vehicles']);
+});
+
+// TRANSPORTE PÚBLICO (PING PROTEGIDO)
+Route::post('/transit/vehicles/{id}/ping', [TransitController::class, 'ping']);
