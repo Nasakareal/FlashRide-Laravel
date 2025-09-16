@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Ride;
 use App\Models\User;
@@ -13,7 +14,6 @@ use Carbon\Carbon;
 
 class RideController extends Controller
 {
-     // Obtener todos los viajes del usuario (pasajero o conductor).
     public function index()
     {
         $userId = Auth::id();
@@ -26,7 +26,6 @@ class RideController extends Controller
         return response()->json($rides);
     }
 
-     // Solicitar un nuevo viaje (pasajero).
     public function store(Request $request)
     {
         $request->validate([
@@ -302,9 +301,13 @@ class RideController extends Controller
 
     public function updateGlobalLocation(Request $request)
     {
-        $request->validate([
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
+        $data = $request->validate([
+            'lat'              => 'required|numeric',
+            'lng'              => 'required|numeric',
+            'bearing'          => 'nullable|integer',
+            'speed_kph'        => 'nullable|integer',
+            'transit_route_id' => 'nullable|integer',
+            'located_at'       => 'nullable|date',
         ]);
 
         $user = Auth::user();
@@ -313,12 +316,38 @@ class RideController extends Controller
             return response()->json(['message' => 'Solo los conductores pueden actualizar ubicación.'], 403);
         }
 
-        $user->lat = $request->lat;
-        $user->lng = $request->lng;
-        $user->save();
+        DB::transaction(function () use ($user, $data) {
+            // 1) Actualiza USERS
+            DB::table('users')->where('id', $user->id)->update([
+                'lat'        => $data['lat'],
+                'lng'        => $data['lng'],
+                'is_online'  => 1,
+                'updated_at' => now(),
+            ]);
 
-        return response()->json(['message' => 'Ubicación global actualizada']);
+            // 2) Sincroniza VEHICLES del driver
+            $vehUpdate = [
+                'last_lat'        => $data['lat'],
+                'last_lng'        => $data['lng'],
+                'last_bearing'    => $data['bearing']   ?? null,
+                'last_speed_kph'  => $data['speed_kph'] ?? null,
+                'last_located_at' => $data['located_at'] ?? now(),
+                'updated_at'      => now(),
+            ];
+
+            // Sólo si viene transit_route_id en el request, lo tocamos
+            if (array_key_exists('transit_route_id', $data)) {
+                $vehUpdate['transit_route_id'] = $data['transit_route_id'];
+            }
+
+            DB::table('vehicles')
+                ->where('user_id', $user->id)
+                ->update($vehUpdate);
+        });
+
+        return response()->json(['ok' => true]);
     }
+
 
     public function updateFase(Request $request, $id)
     {
