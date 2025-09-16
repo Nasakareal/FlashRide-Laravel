@@ -44,12 +44,12 @@ class TransitController extends Controller
         ];
     }
 
+    // Global (no combis)
     public function vehicles(Request $req)
     {
         return DB::table('vehicles as v')
             ->join('users as u', 'u.id', '=', 'v.user_id')
             ->where('u.role', 'driver')
-            ->where('u.is_online', 1)
             ->where('v.vehicle_type', '<>', 'combi')
             ->whereNotNull('v.last_lat')
             ->whereNotNull('v.last_lng')
@@ -68,26 +68,40 @@ class TransitController extends Controller
             ]);
     }
 
+    // Por ruta (combis) con fallback a users.*
     public function routeVehicles($id)
     {
+        $fresh = now()->subMinutes(10);
+
         return DB::table('vehicles as v')
             ->join('users as u', 'u.id', '=', 'v.user_id')
             ->where('u.role', 'driver')
-            ->where('u.is_online', 1)
             ->where('v.vehicle_type', 'combi')
             ->where('v.transit_route_id', $id)
-            ->whereNotNull('v.last_lat')
-            ->whereNotNull('v.last_lng')
-            ->where('v.last_located_at', '>=', now()->subMinutes(5))
-            ->orderByDesc('v.last_located_at')
+            ->where(function ($q) use ($fresh) {
+                // A) vehicles vivos
+                $q->where(function ($q2) use ($fresh) {
+                    $q2->whereNotNull('v.last_lat')
+                       ->whereNotNull('v.last_lng')
+                       ->where('v.last_located_at', '>=', $fresh);
+                })
+                // B) o fallback a users vivos (online + ubicación fresca)
+                ->orWhere(function ($q2) use ($fresh) {
+                    $q2->where('u.is_online', 1)
+                       ->whereNotNull('u.lat')
+                       ->whereNotNull('u.lng')
+                       ->where('u.updated_at', '>=', $fresh);
+                });
+            })
+            ->orderByDesc(DB::raw('COALESCE(v.last_located_at, u.updated_at)'))
             ->limit(200)
             ->get([
                 'v.id',
-                'v.last_lat',
-                'v.last_lng',
+                DB::raw('COALESCE(v.last_lat, u.lat)  as last_lat'),
+                DB::raw('COALESCE(v.last_lng, u.lng)  as last_lng'),
                 'v.last_bearing',
                 'v.last_speed_kph',
-                'v.last_located_at',
+                DB::raw('COALESCE(v.last_located_at, u.updated_at) as last_located_at'),
             ]);
     }
 

@@ -42,8 +42,7 @@
               "RelativeToolTip": "app\\Http\\Controllers\\API\\VehicleController.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T23:24:42.202Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-15T23:24:42.202Z"
             },
             {
               "$type": "Document",
@@ -55,8 +54,7 @@
               "RelativeToolTip": "app\\Http\\Controllers\\API\\PaymentController.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T18:24:00.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-15T18:24:00.544Z"
             },
             {
               "$type": "Document",
@@ -68,8 +66,7 @@
               "RelativeToolTip": "routes\\api.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T01:07:51.881Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-15T01:07:51.881Z"
             },
             {
               "$type": "Document",
@@ -79,7 +76,7 @@
               "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\TransitController.php",
               "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\TransitController.php",
               "RelativeToolTip": "app\\Http\\Controllers\\API\\TransitController.php",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAkwIEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAkwI8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-09-15T01:07:48.612Z",
               "EditorCaption": ""
@@ -94,8 +91,7 @@
               "RelativeToolTip": "app\\Http\\Controllers\\API\\RideController.php",
               "ViewState": "AgIAAD8BAAAAAAAAAAAkwG8BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T01:07:39.747Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-15T01:07:39.747Z"
             }
           ]
         }
