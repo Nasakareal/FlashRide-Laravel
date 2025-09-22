@@ -7,6 +7,6 @@
     "\\app\\Models",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Models\\Vehicle.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\VehicleController.php",
   "PreviewInSolutionExplorer": false
 }

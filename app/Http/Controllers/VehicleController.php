@@ -1,85 +1,52 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Models\Vehicle;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use App\Models\Vehicle;
 
 class VehicleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        if (Schema::hasTable('driver_vehicle_assignments')) {
+            $vehicles = Vehicle::with(['activeDriverAssignment.driver:id,name,phone'])->get();
+        } else {
+            $vehicles = Vehicle::all();
+        }
+        return response()->json($vehicles, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $incomingPlate = $request->input('plate_number', $request->input('plate'));
+        $request->merge(['plate_number' => $incomingPlate]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Vehicle  $vehicle
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Vehicle $vehicle)
-    {
-        //
-    }
+        $data = $request->validate([
+            'plate_number'  => 'required|string|max:191|unique:vehicles,plate_number',
+            'brand'         => 'required|string|max:191',
+            'model'         => 'required|string|max:191',
+            'color'         => 'required|string|max:191',
+            'owner_user_id' => 'nullable|integer|exists:users,id',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Vehicle  $vehicle
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Vehicle $vehicle)
-    {
-        //
-    }
+        $vehicle = Vehicle::create([
+            'user_id'          => $data['owner_user_id'] ?? auth()->id(),
+            'vehicle_type'     => 'combi',
+            'transit_route_id' => null,
+            'last_lat'         => null,
+            'last_lng'         => null,
+            'last_bearing'     => null,
+            'last_speed_kph'   => null,
+            'last_located_at'  => null,
+            'brand'            => $data['brand'],
+            'model'            => $data['model'],
+            'color'            => $data['color'],
+            'plate_number'     => $data['plate_number'],
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Vehicle  $vehicle
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Vehicle $vehicle)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Vehicle  $vehicle
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Vehicle $vehicle)
-    {
-        //
+        return response()->json(['message' => 'Vehículo registrado correctamente.', 'data' => $vehicle], 201);
     }
 }
