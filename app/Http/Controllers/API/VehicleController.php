@@ -8,17 +8,15 @@ use App\Models\Vehicle;
 
 class VehicleController extends Controller
 {
-    /**
-     * Listar todos los vehículos.
-     */
     public function index()
     {
-        return response()->json(Vehicle::all());
+        $vehicles = Vehicle::with([
+            'activeDriverAssignment.driver:id,name,phone'
+        ])->get();
+
+        return response()->json($vehicles);
     }
 
-    /**
-     * Registrar un nuevo vehículo.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([

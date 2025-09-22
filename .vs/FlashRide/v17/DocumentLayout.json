@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "C:\\wamp64\\www\\FlashRide\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\RideController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\TransitController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\TransitController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\VehicleController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\VehicleController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Models\\RouteVehicleAssignment.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Models\\RouteVehicleAssignment.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\DriverController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\DriverController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\RideController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\PaymentController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -30,19 +30,33 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "VehicleController.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\VehicleController.php",
-              "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\VehicleController.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\VehicleController.php",
-              "RelativeToolTip": "app\\Http\\Controllers\\API\\VehicleController.php",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "RouteVehicleAssignment.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Models\\RouteVehicleAssignment.php",
+              "RelativeDocumentMoniker": "app\\Models\\RouteVehicleAssignment.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Models\\RouteVehicleAssignment.php",
+              "RelativeToolTip": "app\\Models\\RouteVehicleAssignment.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T23:24:42.202Z"
+              "WhenOpened": "2025-09-22T02:35:29.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DriverController.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\DriverController.php",
+              "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\DriverController.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\DriverController.php",
+              "RelativeToolTip": "app\\Http\\Controllers\\API\\DriverController.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-09-22T01:24:13.182Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -58,38 +72,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "api.php",
               "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\routes\\api.php",
               "RelativeDocumentMoniker": "routes\\api.php",
               "ToolTip": "C:\\wamp64\\www\\FlashRide\\routes\\api.php",
               "RelativeToolTip": "routes\\api.php",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAkwEoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T01:07:51.881Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TransitController.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\TransitController.php",
-              "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\TransitController.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\TransitController.php",
-              "RelativeToolTip": "app\\Http\\Controllers\\API\\TransitController.php",
-              "ViewState": "AgIAADAAAAAAAAAAAAAAAI8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-15T01:07:48.612Z",
+              "WhenOpened": "2025-09-15T01:07:51.881Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "RideController.php",
               "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php",
               "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\RideController.php",
               "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php",
               "RelativeToolTip": "app\\Http\\Controllers\\API\\RideController.php",
-              "ViewState": "AgIAADkBAAAAAAAAAAAkwC0BAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAP0AAAAAAAAAAAAkwC0BAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-09-15T01:07:39.747Z",
               "EditorCaption": ""

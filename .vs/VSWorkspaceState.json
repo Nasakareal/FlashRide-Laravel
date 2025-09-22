@@ -8,5 +8,6 @@
     "\\app\\Models",
     "\\routes"
   ],
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\TransitController.php",
   "PreviewInSolutionExplorer": false
 }

@@ -28,4 +28,14 @@ class TransitRoute extends Model
     {
         return $q->where('is_active', 1);
     }
+
+    public function vehicleAssignments()
+    {
+        return $this->hasMany(\App\Models\RouteVehicleAssignment::class, 'route_id');
+    }
+    public function activeVehicleAssignments()
+    {
+        return $this->hasMany(\App\Models\RouteVehicleAssignment::class, 'route_id')->where('active', 1)->whereNull('ended_at');
+    }
+
 }

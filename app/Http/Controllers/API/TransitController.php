@@ -74,18 +74,21 @@ class TransitController extends Controller
         $fresh = now()->subMinutes(10);
 
         return DB::table('vehicles as v')
+            ->join('route_vehicle_assignments as rva', function ($j) use ($id) {
+                $j->on('rva.vehicle_id', '=', 'v.id')
+                  ->where('rva.route_id', '=', $id)
+                  ->where('rva.active', '=', 1)
+                  ->whereNull('rva.ended_at');
+            })
             ->join('users as u', 'u.id', '=', 'v.user_id')
             ->where('u.role', 'driver')
             ->where('v.vehicle_type', 'combi')
-            ->where('v.transit_route_id', $id)
             ->where(function ($q) use ($fresh) {
-                // A) vehicles vivos
                 $q->where(function ($q2) use ($fresh) {
                     $q2->whereNotNull('v.last_lat')
                        ->whereNotNull('v.last_lng')
                        ->where('v.last_located_at', '>=', $fresh);
                 })
-                // B) o fallback a users vivos (online + ubicación fresca)
                 ->orWhere(function ($q2) use ($fresh) {
                     $q2->where('u.is_online', 1)
                        ->whereNotNull('u.lat')
@@ -104,6 +107,7 @@ class TransitController extends Controller
                 DB::raw('COALESCE(v.last_located_at, u.updated_at) as last_located_at'),
             ]);
     }
+
 
     public function ping(Request $req, $id)
     {
