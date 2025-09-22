@@ -4,10 +4,9 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\API",
     "\\app\\Models",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\API\\TransitController.php",
+  "SelectedNode": "\\app\\Models\\Vehicle.php",
   "PreviewInSolutionExplorer": false
 }
