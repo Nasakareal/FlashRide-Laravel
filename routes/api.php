@@ -19,6 +19,8 @@ Route::post('/login',    [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile',          [AuthController::class, 'profile']);
+    Route::put ('/profile',          [AuthController::class, 'updateProfile']);
+    Route::put ('/profile/email',    [AuthController::class, 'updateEmail']); 
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::get('/drivers',              [AuthController::class, 'listDrivers']);

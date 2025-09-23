@@ -173,20 +173,24 @@ class RideController extends Controller
             return response()->json(['message' => 'Solo los conductores pueden aceptar viajes.'], 403);
         }
 
-        $ride = Ride::find($id);
-        if (! $ride || $ride->status !== 'pending') {
-            return response()->json(['message' => 'Viaje no disponible para aceptar.'], 400);
-        }
+        return DB::transaction(function () use ($id, $user) {
+            $ride = Ride::where('id', $id)->lockForUpdate()->first();
+            if (! $ride) {
+                return response()->json(['message' => 'Viaje no encontrado.'], 404);
+            }
+            if ($ride->status !== 'pending' || $ride->driver_id) {
+                return response()->json(['message' => 'Ya no disponible'], 409);
+            }
 
-        $ride->driver_id = $user->id;
-        $ride->status    = 'accepted';
-        $ride->save();
+            $ride->driver_id = $user->id;
+            $ride->status    = 'accepted';
+            $ride->fase      = 'recogiendo';
+            $ride->save();
 
-        return response()->json([
-            'message' => 'Viaje aceptado.',
-            'data'    => $ride,
-        ]);
+            return response()->json(['message' => 'Viaje aceptado.', 'data' => $ride->fresh()], 200);
+        });
     }
+
 
      // Completar un viaje (solo conductor asignado).
     public function complete($id)
@@ -257,7 +261,6 @@ class RideController extends Controller
         $ride = Ride::findOrFail($id);
         $user = Auth::user();
 
-        // Solo conductor puede gestionar cambios de estado libres
         if ($user->role !== 'driver') {
             return response()->json(['message' => 'Solo los conductores pueden gestionar viajes.'], 403);
         }
@@ -266,19 +269,26 @@ class RideController extends Controller
             'status' => 'required|in:pending,accepted,in_progress,completed,cancelled',
         ]);
 
-        // Si está aceptando por PUT y aún no tiene conductor, lo asigna
         if ($ride->driver_id === null && $request->status === 'accepted') {
             $ride->driver_id = $user->id;
         }
 
         $ride->status = $request->status;
+
+        $ride->fase = match ($ride->status) {
+            'pending'     => 'esperando',
+            'accepted'    => 'recogiendo',
+            'in_progress' => 'viajando',
+            'completed'   => 'completado',
+            'cancelled'   => $ride->fase,
+            default       => $ride->fase,
+        };
+
         $ride->save();
 
-        return response()->json([
-            'message' => 'Viaje actualizado.',
-            'data'    => $ride,
-        ]);
+        return response()->json(['message' => 'Viaje actualizado.', 'data' => $ride]);
     }
+
 
     public function nearbyDrivers()
     {
@@ -357,7 +367,6 @@ class RideController extends Controller
         if (! $ride) {
             return response()->json(['message' => 'Viaje no encontrado'], 404);
         }
-
         if ($user->role !== 'driver' || $ride->driver_id !== $user->id) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
@@ -367,24 +376,33 @@ class RideController extends Controller
         ]);
 
         $ride->fase = $request->fase;
+
+        $ride->status = match ($ride->fase) {
+            'esperando'   => 'pending',
+            'recogiendo'  => 'accepted',
+            'viajando'    => 'in_progress',
+            'completado'  => 'completed',
+            default       => $ride->status,
+        };
+
         $ride->save();
 
-        return response()->json([
-            'message' => 'Fase del viaje actualizada.',
-            'data' => $ride,
-        ]);
+        return response()->json(['message' => 'Fase del viaje actualizada.', 'data' => $ride]);
     }
+
 
     // Obtener el viaje activo actual del usuario autenticado
     public function active()
     {
         $user = Auth::user();
 
-        $ride = Ride::where(function ($q) use ($user) {
-                    $q->where('passenger_id', $user->id)
-                      ->orWhere('driver_id', $user->id);
-                })
-                ->whereNotIn('fase', ['completado'])->latest()->first();
+        $ride = Ride::where(fn ($q) => $q
+                ->where('passenger_id', $user->id)
+                ->orWhere('driver_id',  $user->id))
+            ->whereNotIn('status', ['completed','cancelled'])
+            ->whereNotIn('fase',   ['completado'])
+            ->latest()
+            ->first();
 
         if (! $ride) {
             return response()->json(['message' => 'Viaje no encontrado'], 404);

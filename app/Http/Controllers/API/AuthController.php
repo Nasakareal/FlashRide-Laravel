@@ -150,4 +150,44 @@ class AuthController extends Controller
         return response()->json($drivers);
     }
 
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'name'  => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
+        ]);
+
+        $user->fill($data)->save();
+
+        return response()->json([
+            'message' => 'Perfil actualizado.',
+            'user'    => $user->fresh(),
+        ]);
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'email'            => 'required|email|unique:users,email,' . $user->id,
+            'current_password' => 'required|string',
+        ]);
+
+        if (! \Illuminate\Support\Facades\Hash::check($data['current_password'], $user->password)) {
+            return response()->json(['message' => 'La contraseña actual no coincide'], 403);
+        }
+
+        $user->email = $data['email'];
+        $user->save();
+
+        return response()->json([
+            'message' => 'Correo actualizado.',
+            'user'    => $user->fresh(),
+        ]);
+    }
+
+
 }
