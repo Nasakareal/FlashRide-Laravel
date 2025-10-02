@@ -2,11 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\Console",
-    "\\app\\Console\\Commands",
-    "\\database",
-    "\\database\\seeders"
+    "\\app\\Http",
+    "\\app\\Http\\Controllers",
+    "\\app\\Http\\Controllers\\Admin",
+    "\\resources",
+    "\\resources\\views",
+    "\\resources\\views\\admin",
+    "\\resources\\views\\layouts",
+    "\\resources\\views\\layouts\\partials"
   ],
-  "SelectedNode": "\\app\\Console\\Kernel.php",
+  "SelectedNode": "\\resources\\views\\layouts\\partials\\nav.blade.php",
   "PreviewInSolutionExplorer": false
 }

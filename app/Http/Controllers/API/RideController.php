@@ -254,8 +254,7 @@ class RideController extends Controller
             ], 500);
         }
     }
-
-     // Actualizar estado o datos del viaje (genérico).
+    // Actualizar estado o datos del viaje (genérico).
     public function update(Request $request, $id)
     {
         $ride = Ride::findOrFail($id);
@@ -275,19 +274,30 @@ class RideController extends Controller
 
         $ride->status = $request->status;
 
-        $ride->fase = match ($ride->status) {
-            'pending'     => 'esperando',
-            'accepted'    => 'recogiendo',
-            'in_progress' => 'viajando',
-            'completed'   => 'completado',
-            'cancelled'   => $ride->fase,
-            default       => $ride->fase,
-        };
+        switch ($ride->status) {
+            case 'pending':
+                $ride->fase = 'esperando';
+                break;
+            case 'accepted':
+                $ride->fase = 'recogiendo';
+                break;
+            case 'in_progress':
+                $ride->fase = 'viajando';
+                break;
+            case 'completed':
+                $ride->fase = 'completado';
+                break;
+            case 'cancelled':
+            default:
+                // deja $ride->fase como está
+                break;
+        }
 
         $ride->save();
 
         return response()->json(['message' => 'Viaje actualizado.', 'data' => $ride]);
     }
+
 
 
     public function nearbyDrivers()
@@ -377,18 +387,28 @@ class RideController extends Controller
 
         $ride->fase = $request->fase;
 
-        $ride->status = match ($ride->fase) {
-            'esperando'   => 'pending',
-            'recogiendo'  => 'accepted',
-            'viajando'    => 'in_progress',
-            'completado'  => 'completed',
-            default       => $ride->status,
-        };
+        switch ($ride->fase) {
+            case 'esperando':
+                $ride->status = 'pending';
+                break;
+            case 'recogiendo':
+                $ride->status = 'accepted';
+                break;
+            case 'viajando':
+                $ride->status = 'in_progress';
+                break;
+            case 'completado':
+                $ride->status = 'completed';
+                break;
+            default:
+                break;
+        }
 
         $ride->save();
 
         return response()->json(['message' => 'Fase del viaje actualizada.', 'data' => $ride]);
     }
+
 
 
     // Obtener el viaje activo actual del usuario autenticado
