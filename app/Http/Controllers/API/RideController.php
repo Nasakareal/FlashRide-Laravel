@@ -289,7 +289,6 @@ class RideController extends Controller
                 break;
             case 'cancelled':
             default:
-                // deja $ride->fase como está
                 break;
         }
 
@@ -431,4 +430,53 @@ class RideController extends Controller
         return response()->json($ride);
     }
 
+        // Cancelar un viaje (pasajero o conductor asignado)
+    public function cancel($id)
+    {
+        $user = Auth::user();
+
+        return DB::transaction(function () use ($id, $user) {
+
+            $ride = Ride::where('id', $id)->lockForUpdate()->first();
+
+            if (! $ride) {
+                return response()->json(['message' => 'Viaje no encontrado.'], 404);
+            }
+
+            // Solo puede cancelar:
+            // - el pasajero dueño del viaje
+            // - o el conductor asignado (si ya fue aceptado)
+            $isPassenger = ((int)$ride->passenger_id === (int)$user->id);
+            $isDriver    = ($ride->driver_id !== null && (int)$ride->driver_id === (int)$user->id);
+
+            if (! $isPassenger && ! $isDriver) {
+                return response()->json(['message' => 'No autorizado.'], 403);
+            }
+
+            // Si ya está completado o ya cancelado, no hagas nada raro
+            if (in_array($ride->status, ['completed', 'cancelled'], true) || in_array($ride->fase, ['completado', 'cancelado'], true)) {
+                return response()->json([
+                    'message' => 'El viaje ya está finalizado.',
+                    'data'    => $ride
+                ], 409);
+            }
+
+            if ($ride->fase === 'viajando' || $ride->status === 'in_progress') {
+                return response()->json([
+                    'message' => 'No se puede cancelar un viaje en progreso.',
+                    'data'    => $ride
+                ], 409);
+            }
+
+            // Cancela
+            $ride->status = 'cancelled';
+            $ride->fase   = 'cancelado';
+            $ride->save();
+
+            return response()->json([
+                'message' => 'Viaje cancelado.',
+                'data'    => $ride->fresh(),
+            ], 200);
+        });
+    }   
 }
