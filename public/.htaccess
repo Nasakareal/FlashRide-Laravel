@@ -5,9 +5,18 @@
 
     RewriteEngine On
 
+    # IMPORTANTÍSIMO en tu caso (subcarpeta /flashride/public)
+    RewriteBase /flashride/public/
+
+    # Authorization header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Redirige /index.php/... a /... (opcional pero limpia URLs)
+    RewriteCond %{THE_REQUEST} \s/+flashride/public/index\.php[^\s]* [NC]
+    RewriteRule ^index\.php(.*)$ $1 [R=301,L]
+
+    # Front controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]

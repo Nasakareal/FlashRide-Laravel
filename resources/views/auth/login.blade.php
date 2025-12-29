@@ -4,127 +4,257 @@
   <meta charset="utf-8">
   <title>Taxi Seguro · Iniciar sesión</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand: '#FF1B8F', ink:'#0B0B0C' },
-          dropShadow: { glow: '0 0 25px rgba(255,27,143,.45)' },
-          keyframes: {
-            floaty: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-6px)'} },
-            gradient: { '0%,100%':{'background-position':'0% 50%'}, '50%':{'background-position':'100% 50%'} }
-          },
-          animation: {
-            floaty:'floaty 6s ease-in-out infinite',
-            gradient:'gradient 12s ease infinite',
-          }
-        }
-      }
-    }
-  </script>
-  <!-- Inter + Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 (solo para grid/spacing y que se vea institucional) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
   <style>
-    html,body{ height:100% }
-    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:#060608; color:#EDEDED }
-    .noise:after{
-      content:''; position:fixed; inset:0; pointer-events:none; opacity:.08;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
-      mix-blend-mode:soft-light;
+    :root{
+      --brand:#FF1B8F;
+      --ink:#111827;
+      --muted:#6B7280;
+      --border:#E5E7EB;
+      --soft:#F8FAFC;
+      --danger:#ef4444;
+      --success:#22c55e;
     }
-    .card-glass{ background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.12); backdrop-filter:blur(12px) }
-    .btn-neo{ border:1px solid rgba(255,255,255,.12); background:radial-gradient(120% 120% at 10% 10%, rgba(255,27,143,.25), rgba(255,255,255,.03)); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 30px rgba(255,27,143,.18); transition:.2s ease }
-    .btn-neo:hover{ transform:translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 16px 40px rgba(255,27,143,.32) }
-    .input{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); transition:.15s; }
-    .input:focus{ outline:none; border-color:#FF1B8F; box-shadow:0 0 0 3px rgba(255,27,143,.25) }
+
+    html,body{ height:100%; }
+    body{
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,Noto Sans;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    /* fondo suave como welcome */
+    .bg-soft{
+      min-height:100%;
+      background:
+        radial-gradient(900px 420px at 15% 10%, rgba(255,27,143,.10), transparent 55%),
+        radial-gradient(820px 420px at 85% 20%, rgba(86,167,255,.10), transparent 55%),
+        linear-gradient(180deg, #fff 0%, var(--soft) 100%);
+    }
+
+    .card-soft{
+      border:1px solid var(--border);
+      border-radius: 18px;
+      background:#fff;
+      box-shadow: 0 12px 30px rgba(17,24,39,.08);
+    }
+
+    .brand-mark{
+      width:46px; height:46px;
+      border-radius: 14px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(255,27,143,.10);
+      border:1px solid rgba(255,27,143,.18);
+      color: var(--brand);
+    }
+
+    .title{
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .muted{ color: var(--muted); }
+
+    .form-label{
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: .4rem;
+    }
+
+    .form-control{
+      border:1px solid var(--border);
+      border-radius: 12px;
+      padding: .72rem .9rem;
+      font-weight: 600;
+    }
+    .form-control:focus{
+      border-color: rgba(255,27,143,.55);
+      box-shadow: 0 0 0 .25rem rgba(255,27,143,.15);
+    }
+
+    .btn-brand{
+      background: var(--brand);
+      border:1px solid var(--brand);
+      color:#fff;
+      font-weight: 900;
+      border-radius: 12px;
+      padding: .85rem 1rem;
+    }
+    .btn-brand:hover{
+      background:#e0147e;
+      border-color:#e0147e;
+      color:#fff;
+    }
+
+    .btn-outline-brand{
+      border:1px solid var(--brand);
+      color: var(--brand);
+      background:#fff;
+      font-weight: 900;
+      border-radius: 12px;
+      padding: .75rem 1rem;
+    }
+    .btn-outline-brand:hover{
+      background: rgba(255,27,143,.08);
+      color: var(--brand);
+      border-color: var(--brand);
+    }
+
+    .alert-soft{
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: .75rem .9rem;
+      font-weight: 650;
+    }
+    .alert-success{
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.08);
+      color: #065f46;
+    }
+    .alert-danger{
+      border-color: rgba(239,68,68,.35);
+      background: rgba(239,68,68,.08);
+      color: #7f1d1d;
+    }
+
+    .small-link{
+      font-weight: 800;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .small-link:hover{ color: var(--brand); }
+
+    .footer-note{
+      color: var(--muted);
+      font-size: .82rem;
+    }
   </style>
 </head>
-<body class="noise overflow-x-hidden">
-  <!-- BG -->
-  <div aria-hidden="true" class="pointer-events-none fixed inset-0">
-    <div class="absolute -top-1/3 -left-1/3 w-[70vw] h-[70vw] rounded-full blur-3xl opacity-30"
-         style="background: radial-gradient(45% 45% at 50% 50%, rgba(255,27,143,.55), transparent 60%);"></div>
-    <div class="absolute -bottom-1/3 -right-1/3 w-[70vw] h-[70vw] rounded-full blur-3xl opacity-30"
-         style="background: radial-gradient(50% 50% at 50% 50%, rgba(86,167,255,.38), transparent 60%);"></div>
-    <div class="absolute inset-0 bg-[length:300%_300%] animate-gradient opacity-25"
-         style="background-image: linear-gradient(120deg, rgba(255,27,143,.12), rgba(86,167,255,.10), rgba(255,27,143,.12));"></div>
-  </div>
 
-  <!-- Contenido -->
-  <main class="relative z-10 min-h-full flex items-center justify-center px-6 py-12">
-    <div class="w-full max-w-md">
-      <!-- Logo / título -->
-      <div class="mb-8 flex items-center gap-3">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center drop-shadow-glow"
-             style="background: radial-gradient(100% 100% at 30% 20%, rgba(255,27,143,.9), rgba(255,27,143,.55));">
-          <i class="fa-solid fa-taxi text-white text-lg"></i>
-        </div>
-        <div>
-          <div class="text-2xl font-extrabold tracking-tight">Taxi Seguro</div>
-          <div class="text-xs text-white/60 -mt-0.5">Panel seguro de administración</div>
-        </div>
-      </div>
+<body>
+  <main class="bg-soft d-flex align-items-center py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5">
 
-      <div class="card-glass rounded-2xl p-6 md:p-7 shadow-2xl">
-        <h1 class="text-xl md:text-2xl font-bold">Iniciar sesión</h1>
-        <p class="text-white/70 text-sm mt-1">Usa tus credenciales de administrador.</p>
-
-        @if (session('status'))
-          <div class="mt-4 text-sm rounded-lg bg-green-500/15 border border-green-500/30 px-3 py-2 text-green-200">
-            {{ session('status') }}
-          </div>
-        @endif
-
-        @if ($errors->any())
-          <div class="mt-4 text-sm rounded-lg bg-rose-500/15 border border-rose-500/30 px-3 py-2 text-rose-200">
-            {{ $errors->first() }}
-          </div>
-        @endif
-
-        <form class="mt-6 space-y-4" method="POST" action="{{ route('login.post') }}">
-          @csrf
-          <div>
-            <label for="email" class="block text-sm mb-1.5">Correo</label>
-            <input id="email" name="email" type="email" autocomplete="email" required autofocus
-                   value="{{ old('email') }}"
-                   class="input w-full rounded-lg px-3 py-2.5 placeholder-white/40"
-                   placeholder="tú@empresa.com">
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between">
-              <label for="password" class="block text-sm mb-1.5">Contraseña</label>
-              {{-- Si luego agregas recovery, activa este enlace --}}
-              {{-- <a href="{{ route('password.request') }}" class="text-xs text-white/70 hover:text-white">¿Olvidaste tu contraseña?</a> --}}
+          <!-- Encabezado sin navbar -->
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="brand-mark">
+              <i class="fa-solid fa-taxi"></i>
             </div>
-            <input id="password" name="password" type="password" autocomplete="current-password" required
-                   class="input w-full rounded-lg px-3 py-2.5 placeholder-white/40"
-                   placeholder="••••••••">
+            <div>
+              <div class="h4 mb-0 title">Taxi Seguro</div>
+              <div class="muted" style="font-size:.92rem;">Acceso al panel de administración</div>
+            </div>
           </div>
 
-          <div class="flex items-center justify-between text-sm">
-            <label class="inline-flex items-center gap-2">
-              <input type="checkbox" name="remember" class="rounded border-white/20 bg-transparent">
-              <span>Recordarme</span>
-            </label>
-            @if (Route::has('home'))
-              <a href="{{ route('home') }}" class="text-white/70 hover:text-white">Volver al inicio</a>
+          <div class="card-soft p-4 p-md-4">
+            <div class="d-flex align-items-start justify-content-between gap-3 mb-2">
+              <div>
+                <h1 class="h4 title mb-1">Iniciar sesión</h1>
+                <div class="muted">Ingresa con tus credenciales autorizadas.</div>
+              </div>
+              <div class="d-none d-md-flex align-items-center gap-2 muted" style="font-weight:800;">
+                <i class="fa-solid fa-shield-halved" style="color:var(--brand);"></i>
+                Acceso restringido
+              </div>
+            </div>
+
+            @if (session('status'))
+              <div class="alert-soft alert-success mt-3">
+                {{ session('status') }}
+              </div>
             @endif
+
+            @if ($errors->any())
+              <div class="alert-soft alert-danger mt-3">
+                {{ $errors->first() }}
+              </div>
+            @endif
+
+            <form class="mt-4" method="POST" action="{{ route('login.post') }}">
+              @csrf
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Correo</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  placeholder="tú@dependencia.gob.mx"
+                  autocomplete="email"
+                  value="{{ old('email') }}"
+                  required
+                  autofocus
+                >
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex align-items-center justify-content-between">
+                  <label for="password" class="form-label mb-0">Contraseña</label>
+                  {{-- Si luego agregas recovery, activa este enlace --}}
+                  {{-- <a href="{{ route('password.request') }}" class="small-link" style="font-size:.85rem;">¿Olvidaste tu contraseña?</a> --}}
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  class="form-control mt-2"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                >
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <label class="d-inline-flex align-items-center gap-2" style="font-weight:800; color:var(--ink);">
+                  <input type="checkbox" name="remember" class="form-check-input m-0" style="border-color: var(--border);">
+                  <span style="font-size:.95rem;">Recordarme</span>
+                </label>
+
+                <a href="{{ url('/') }}" class="small-link" style="font-size:.92rem;">
+                  Volver al inicio
+                </a>
+              </div>
+
+              <button type="submit" class="btn btn-brand w-100">
+                <i class="fa-solid fa-right-to-bracket me-2"></i> Entrar
+              </button>
+
+              <div class="mt-3">
+                <a class="btn btn-outline-brand w-100" href="{{ url('/') }}">
+                  <i class="fa-solid fa-house me-2"></i> Página de bienvenida
+                </a>
+              </div>
+            </form>
+
+            <div class="mt-4 muted" style="font-size:.9rem;">
+              <i class="fa-solid fa-circle-info me-2"></i>
+              Si no tienes acceso, solicita alta con el administrador del sistema.
+            </div>
           </div>
 
-          <button type="submit" class="btn-neo w-full rounded-xl px-5 py-3 font-bold flex items-center justify-center gap-2">
-            <i class="fa-regular fa-unlock-keyhole"></i> Entrar
-          </button>
-        </form>
-      </div>
+          <div class="text-center mt-4 footer-note">
+            © {{ date('Y') }} Taxi Seguro · FlashRide · Hecho con <span style="color:var(--brand); font-weight:900;">♥</span> en Michoacán
+          </div>
 
-      <p class="text-center text-xs text-white/50 mt-6">
-        © {{ date('Y') }} FlashRide · Seguridad primero · Hecho con <span class="text-brand">♥</span>
-      </p>
+        </div>
+      </div>
     </div>
   </main>
+
+  <!-- Bootstrap JS (no es necesario, pero no estorba) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
