@@ -23,10 +23,6 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required', 'string'],
-        ], [
-            'email.required' => 'El correo es obligatorio.',
-            'email.email'    => 'El correo no es válido.',
-            'password.required' => 'La contraseña es obligatoria.',
         ]);
 
         $remember = $request->boolean('remember');
@@ -40,7 +36,8 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        if (!$user || !$user->hasRole('admin')) {
+
+        if (!$user || (string)($user->role ?? '') !== 'admin') {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -56,7 +53,6 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
