@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
 Route::prefix('flashride')->middleware('auth')->group(function () {
 
     // Dashboard general (para cualquier usuario autenticado)
-    Route::get('dashboard', fn () => view('dashboard'))->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'publicDashboard'])->name('dashboard');
 
     // ============================
     //   ADMIN PANEL (role:admin)
@@ -105,7 +105,7 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::resource('panic', PanicController::class)->only(['index','show','update']);
             Route::post('panic/{incident}/close', [PanicController::class,'close'])->name('panic.close');
 
-            // ========= ITINERARIOS / RUTAS =========
+            // ========= ITINERARIOS / RUTAS (camión) =========
             Route::resource('itineraries', ItineraryController::class);
             Route::post('itineraries/{itinerary}/publish',   [ItineraryController::class,'publish'])->name('itineraries.publish');
             Route::post('itineraries/{itinerary}/unpublish', [ItineraryController::class,'unpublish'])->name('itineraries.unpublish');

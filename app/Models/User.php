@@ -12,10 +12,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * Importante cuando usas Spatie y guard web.
-     * (Si usas otro guard, cámbialo.)
-     */
     protected $guard_name = 'web';
 
     protected $fillable = [
@@ -41,7 +37,6 @@ class User extends Authenticatable
         'lng'               => 'float',
     ];
 
-    // --- Relaciones de tu app ---
     public function trips()
     {
         return $this->hasMany(Trip::class, 'driver_id');
@@ -55,8 +50,18 @@ class User extends Authenticatable
     public function activeVehicleAssignment()
     {
         return $this->hasOne(DriverVehicleAssignment::class, 'driver_id')
-                    ->where('active', 1)
-                    ->whereNull('ended_at');
+            ->where('active', 1)
+            ->whereNull('ended_at');
+    }
+
+    public function passengerTrips()
+    {
+        return $this->hasMany(Trip::class, 'user_id');
+    }
+
+    public function driverTrips()
+    {
+        return $this->hasMany(Trip::class, 'driver_id');
     }
 
     // --- Scopes útiles (opcionales) ---

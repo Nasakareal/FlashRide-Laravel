@@ -1,99 +1,211 @@
 {{-- resources/views/dashboard.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title','Dashboard')
 
-@section('page-header')
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Dashboard</h1>
-      <p class="text-white/60 mt-1 text-sm">Resumen operativo de la flota y accesos rápidos.</p>
-    </div>
-    <div class="hidden md:flex items-center gap-2">
-      <a href="{{ route('admin.dashboard') }}" class="btn-neo px-4 py-2 rounded-lg font-semibold">
-        <i class="fa-solid fa-gauge-high"></i> Panel Admin
-      </a>
-    </div>
-  </div>
-@endsection
+@php
+  $to = function(string $name, string $fallback = '#', array $params = []) {
+    return \Illuminate\Support\Facades\Route::has($name) ? route($name, $params) : $fallback;
+  };
+@endphp
 
 @section('content')
-  {{-- Mensaje principal (equivalente al “You’re logged in!”) --}}
-  <div class="card-glass rounded-2xl border border-white/10 p-5 mb-8">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-           style="background: radial-gradient(100% 100% at 30% 20%, rgba(255,27,143,.9), rgba(255,27,143,.55));">
-        <i class="fa-regular fa-circle-check text-white text-lg"></i>
-      </div>
+
+  <section id="accesos">
+    <div class="d-flex align-items-end justify-content-between mb-3">
       <div>
-        <div class="font-bold">¡Sesión iniciada!</div>
-        <div class="text-white/70 text-sm">Bienvenido de vuelta, {{ Auth::user()->name ?? 'admin' }}.</div>
-      </div>
-    </div>
-  </div>
-
-  {{-- Tarjetas de KPIs --}}
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    <div class="card-glass rounded-xl p-5 border border-white/10">
-      <div class="text-white/70 text-xs">Conductores activos</div>
-      <div class="mt-2 text-2xl font-extrabold tracking-tight">--</div>
-      <div class="mt-3 text-white/60 text-xs flex items-center gap-2">
-        <i class="fa-solid fa-users-gear"></i> Última hora
-      </div>
-    </div>
-    <div class="card-glass rounded-xl p-5 border border-white/10">
-      <div class="text-white/70 text-xs">Viajes hoy</div>
-      <div class="mt-2 text-2xl font-extrabold tracking-tight">--</div>
-      <div class="mt-3 text-white/60 text-xs flex items-center gap-2">
-        <i class="fa-solid fa-route"></i> Corte 23:59
-      </div>
-    </div>
-    <div class="card-glass rounded-xl p-5 border border-white/10">
-      <div class="text-white/70 text-xs">% Éxito</div>
-      <div class="mt-2 text-2xl font-extrabold tracking-tight">--</div>
-      <div class="mt-3 text-white/60 text-xs flex items-center gap-2">
-        <i class="fa-solid fa-chart-line"></i> Últimas 24 h
-      </div>
-    </div>
-    <div class="card-glass rounded-xl p-5 border border-white/10">
-      <div class="text-white/70 text-xs">Alertas de pánico</div>
-      <div class="mt-2 text-2xl font-extrabold tracking-tight">--</div>
-      <div class="mt-3 text-white/60 text-xs flex items-center gap-2">
-        <i class="fa-solid fa-triangle-exclamation"></i> En revisión
-      </div>
-    </div>
-  </div>
-
-  {{-- Panel doble: mapa placeholder + actividad reciente --}}
-  <div class="grid lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2 card-glass rounded-2xl border border-white/10 overflow-hidden">
-      <div class="flex items-center justify-between p-5 border-b border-white/10">
-        <div class="font-semibold"><i class="fa-solid fa-map-location-dot"></i> Telemetría</div>
-        <span class="text-xs text-white/60">Mapa / Heatmap próximamente</span>
-      </div>
-      <div class="h-64 md:h-80 bg-[radial-gradient(circle_at_20%_30%,rgba(255,27,143,.12),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(86,167,255,.12),transparent_40%)] flex items-center justify-center text-white/60">
-        <span class="animate-floaty">Aquí irá el mapa en tiempo real</span>
+        <h2 class="section-title mb-1">Accesos rápidos</h2>
+        <div class="small" style="color:var(--muted);">Entrar directo a listados y módulos.</div>
       </div>
     </div>
 
-    <div class="card-glass rounded-2xl border border-white/10">
-      <div class="p-5 border-b border-white/10 font-semibold">
-        <i class="fa-solid fa-clock-rotate-left"></i> Actividad reciente
+    <div class="row g-3 g-lg-4">
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-soft p-4">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="icon-pill mb-3"><i class="fa-solid fa-car-side"></i></div>
+              <div class="fw-black" style="font-weight:900;">Vehículos</div>
+              <div class="small" style="color:var(--muted);">Registro, placas y estatus.</div>
+            </div>
+            <div class="text-end">
+              <div class="small" style="color:var(--muted);">Total</div>
+              <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                {{ isset($vehiclesCount) ? number_format($vehiclesCount) : '—' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.vehicles.index') }}">
+              <i class="fa-solid fa-list me-2"></i> Ver
+            </a>
+            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.vehicles.create') }}">
+              <i class="fa-solid fa-plus me-2"></i> Nuevo
+            </a>
+          </div>
+        </div>
       </div>
-      <ul class="divide-y divide-white/10">
-        <li class="p-5 text-sm">
-          <div class="font-semibold">You’re logged in!</div>
-          <div class="text-white/60">Ingreso correcto al sistema.</div>
-        </li>
-        <li class="p-5 text-sm">
-          <div class="font-semibold">Placeholder</div>
-          <div class="text-white/60">Eventos operativos próximos.</div>
-        </li>
-        <li class="p-5 text-sm">
-          <div class="font-semibold">Placeholder</div>
-          <div class="text-white/60">Logs, auditoría, etc.</div>
-        </li>
-      </ul>
+
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-soft p-4">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="icon-pill mb-3"><i class="fa-solid fa-users-gear"></i></div>
+              <div class="fw-black" style="font-weight:900;">Conductores</div>
+              <div class="small" style="color:var(--muted);">Altas, validación y control.</div>
+            </div>
+            <div class="text-end">
+              <div class="small" style="color:var(--muted);">Total</div>
+              <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                {{ isset($driversCount) ? number_format($driversCount) : '—' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.drivers.index') }}">
+              <i class="fa-solid fa-list me-2"></i> Ver
+            </a>
+            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.drivers.create') }}">
+              <i class="fa-solid fa-plus me-2"></i> Nuevo
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-soft p-4">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="icon-pill mb-3"><i class="fa-solid fa-route"></i></div>
+              <div class="fw-black" style="font-weight:900;">Rutas</div>
+              <div class="small" style="color:var(--muted);">Rutas de camión registradas.</div>
+            </div>
+            <div class="text-end">
+              <div class="small" style="color:var(--muted);">Total</div>
+              <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                {{ isset($routesCount) ? number_format($routesCount) : '—' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.itineraries.index') }}">
+              <i class="fa-solid fa-list me-2"></i> Ver
+            </a>
+            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.itineraries.create') }}">
+              <i class="fa-solid fa-plus me-2"></i> Nuevo
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-soft p-4">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="icon-pill mb-3"><i class="fa-solid fa-user-group"></i></div>
+              <div class="fw-black" style="font-weight:900;">Usuarios</div>
+              <div class="small" style="color:var(--muted);">Admins, roles y acceso.</div>
+            </div>
+            <div class="text-end">
+              <div class="small" style="color:var(--muted);">Total</div>
+              <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                {{ isset($usersCount) ? number_format($usersCount) : '—' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.users.index') }}">
+              <i class="fa-solid fa-list me-2"></i> Ver
+            </a>
+            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.users.create') }}">
+              <i class="fa-solid fa-plus me-2"></i> Nuevo
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section class="mt-4">
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-8">
+        <div class="card-soft overflow-hidden">
+          <div class="p-4 d-flex align-items-center justify-content-between" style="border-bottom:1px solid var(--border);">
+            <div class="fw-black" style="font-weight:900;">
+              <i class="fa-solid fa-route me-2" style="color:var(--brand)"></i> Operación
+            </div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.trips.index') }}">
+                <i class="fa-solid fa-list me-2"></i> Viajes
+              </a>
+              <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.panic.index') }}">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Pánico
+              </a>
+            </div>
+          </div>
+
+          <div class="p-4">
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
+                  <div class="small" style="color:var(--muted);">Viajes hoy</div>
+                  <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                    {{ isset($tripsToday) ? number_format($tripsToday) : '—' }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
+                  <div class="small" style="color:var(--muted);">Incidencias abiertas</div>
+                  <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                    {{ isset($incidentsOpen) ? number_format($incidentsOpen) : '—' }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
+                  <div class="small" style="color:var(--muted);">Alertas pánico</div>
+                  <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                    {{ isset($panicAlertsOpen) ? number_format($panicAlertsOpen) : '—' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 small" style="color:var(--muted);">
+              <i class="fa-solid fa-circle-info me-2"></i>
+              Después conectamos esta sección a los estados reales (hoy/abiertas/en revisión).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card-soft overflow-hidden">
+          <div class="p-4 fw-black" style="font-weight:900; border-bottom:1px solid var(--border);">
+            <i class="fa-solid fa-clock-rotate-left me-2" style="color:var(--brand)"></i> Actividad reciente
+          </div>
+
+          <div class="p-4" style="border-bottom:1px solid var(--border);">
+            <div class="fw-black" style="font-weight:900;">Ingreso correcto</div>
+            <div class="small" style="color:var(--muted);">Sesión iniciada sin incidencias.</div>
+          </div>
+
+          <div class="p-4">
+            <div class="fw-black" style="font-weight:900;">Accesos rápidos</div>
+            <div class="small" style="color:var(--muted);">
+              Usa las tarjetas para entrar directo a cada módulo.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 @endsection

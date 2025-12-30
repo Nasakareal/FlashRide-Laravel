@@ -20,7 +20,7 @@ class TransitRoute extends Model
     ];
 
     protected $casts = [
-        'is_active' => 'integer',
+        'is_active'  => 'boolean',
         'stops_json' => 'array',
     ];
 
@@ -29,13 +29,19 @@ class TransitRoute extends Model
         return $q->where('is_active', 1);
     }
 
-    public function vehicleAssignments()
+    public function vehicles()
     {
-        return $this->hasMany(\App\Models\RouteVehicleAssignment::class, 'route_id');
-    }
-    public function activeVehicleAssignments()
-    {
-        return $this->hasMany(\App\Models\RouteVehicleAssignment::class, 'route_id')->where('active', 1)->whereNull('ended_at');
+        return $this->hasMany(Vehicle::class, 'transit_route_id');
     }
 
+    public function vehicleAssignments()
+    {
+        return $this->hasMany(RouteVehicleAssignment::class, 'route_id');
+    }
+
+    public function activeVehicleAssignments()
+    {
+        return $this->hasMany(RouteVehicleAssignment::class, 'route_id')
+            ->where('active', 1)->whereNull('ended_at');
+    }
 }

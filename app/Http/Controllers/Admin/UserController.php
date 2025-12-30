@@ -7,18 +7,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    /**
-     * GET /flashride/admin/users
-     * Lista con búsqueda y filtro por rol (Spatie).
-     */
     public function index(Request $request)
     {
         $q    = trim((string) $request->input('q'));
-        $role = trim((string) $request->input('role')); // admin|driver|passenger (Spatie)
+        $role = trim((string) $request->input('role'));
 
         $users = User::query()
             ->when($q, function ($query) use ($q) {
@@ -29,35 +26,41 @@ class UserController extends Controller
                 });
             })
             ->when($role, function ($query) use ($role) {
-                // Filtro por rol de Spatie
-                $query->role($role);
+                $rolesDb = Role::query()->pluck('name')->all();
+
+                if (!empty($rolesDb)) {
+                    $query->role($role);
+                } else {
+                    if (Schema::hasColumn('users', 'role')) {
+                        $query->where('role', $role);
+                    }
+                }
             })
             ->latest('id')
             ->paginate(20)
             ->withQueryString();
 
-        // Para dibujar filtros en la vista
         $roles = Role::query()->orderBy('name')->pluck('name')->all();
+        if (empty($roles)) {
+            $roles = ['admin', 'driver', 'passenger'];
+        }
 
         return view('admin.users.index', compact('users', 'roles', 'q', 'role'));
     }
 
-    /**
-     * GET /flashride/admin/users/create
-     */
     public function create()
     {
         $roles = Role::query()->orderBy('name')->pluck('name')->all();
+        if (empty($roles)) {
+            $roles = ['admin', 'driver', 'passenger'];
+        }
+
         return view('admin.users.create', compact('roles'));
     }
 
-    /**
-     * POST /flashride/admin/users
-     */
     public function store(Request $request)
     {
         $rolesValidos = Role::query()->pluck('name')->all();
-        // Si aún no creaste los roles en DB, garantizamos el set por defecto:
         if (empty($rolesValidos)) {
             $rolesValidos = ['admin','driver','passenger'];
         }
@@ -76,43 +79,38 @@ class UserController extends Controller
         $user->phone    = $data['phone'] ?? null;
         $user->password = Hash::make($data['password']);
 
-        // Mantén sincronizada tu columna legacy "role" (no estorba con Spatie)
-        if (isset($user->role)) {
+        if (Schema::hasColumn('users', 'role')) {
             $user->role = $data['role'];
         }
 
         $user->save();
 
-        // Asignar rol real (Spatie)
-        $user->syncRoles([$data['role']]);
+        $rolesDb = Role::query()->pluck('name')->all();
+        if (in_array($data['role'], $rolesDb, true)) {
+            $user->syncRoles([$data['role']]);
+        }
 
         return redirect()
             ->route('admin.users.index')
             ->with('status', "Usuario {$user->name} creado correctamente.");
     }
 
-    /**
-     * GET /flashride/admin/users/{user}
-     */
     public function show(User $user)
     {
-        // Si quieres mostrar roles en la vista:
-        $roleNames = $user->getRoleNames();
+        $roleNames = method_exists($user, 'getRoleNames') ? $user->getRoleNames() : collect();
         return view('admin.users.show', compact('user','roleNames'));
     }
 
-    /**
-     * GET /flashride/admin/users/{user}/edit
-     */
     public function edit(User $user)
     {
         $roles = Role::query()->orderBy('name')->pluck('name')->all();
+        if (empty($roles)) {
+            $roles = ['admin', 'driver', 'passenger'];
+        }
+
         return view('admin.users.edit', compact('user','roles'));
     }
 
-    /**
-     * PUT/PATCH /flashride/admin/users/{user}
-     */
     public function update(Request $request, User $user)
     {
         $rolesValidos = Role::query()->pluck('name')->all();
@@ -136,40 +134,154 @@ class UserController extends Controller
             $user->password = Hash::make($data['password']);
         }
 
-        // Mantén sincronizada tu columna legacy "role"
-        if (isset($user->role)) {
+        if (Schema::hasColumn('users', 'role')) {
             $user->role = $data['role'];
         }
 
         $user->save();
 
-        // Sincroniza roles Spatie
-        $user->syncRoles([$data['role']]);
+        $rolesDb = Role::query()->pluck('name')->all();
+        if (in_array($data['role'], $rolesDb, true)) {
+            $user->syncRoles([$data['role']]);
+        }
 
         return redirect()
             ->route('admin.users.edit', $user)
             ->with('status', "Usuario {$user->name} actualizado.");
     }
 
-    /**
-     * DELETE /flashride/admin/users/{user}
-     */
     public function destroy(User $user)
     {
-        // Evita que un admin se borre a sí mismo
         if (auth()->id() === $user->id) {
             return back()->withErrors(['user' => 'No puedes eliminar tu propio usuario.']);
         }
 
         $name = $user->name;
 
-        // Limpia roles Spatie antes de borrar
-        $user->syncRoles([]);
+        if (method_exists($user, 'syncRoles')) {
+            $user->syncRoles([]);
+        }
 
         $user->delete();
 
         return redirect()
             ->route('admin.users.index')
             ->with('status', "Usuario {$name} eliminado.");
+    }
+
+    public function activate(User $user)
+    {
+        if (Schema::hasColumn('users', 'is_active')) {
+            $user->is_active = 1;
+            $user->save();
+        }
+
+        return back()->with('status', "Usuario {$user->name} activado.");
+    }
+
+    public function deactivate(User $user)
+    {
+        if (auth()->id() === $user->id) {
+            return back()->withErrors(['user' => 'No puedes desactivar tu propio usuario.']);
+        }
+
+        if (Schema::hasColumn('users', 'is_active')) {
+            $user->is_active = 0;
+            $user->save();
+        }
+
+        return back()->with('status', "Usuario {$user->name} desactivado.");
+    }
+
+    public function bulk(Request $request)
+    {
+        $data = $request->validate([
+            'action' => ['required', Rule::in(['delete','activate','deactivate'])],
+            'ids'    => ['required','array'],
+            'ids.*'  => ['integer'],
+        ]);
+
+        $ids = array_values(array_unique($data['ids']));
+
+        $ids = array_filter($ids, fn ($id) => (int)$id !== (int)auth()->id());
+
+        $users = User::query()->whereIn('id', $ids)->get();
+
+        if ($data['action'] === 'delete') {
+            foreach ($users as $u) {
+                if (method_exists($u, 'syncRoles')) {
+                    $u->syncRoles([]);
+                }
+                $u->delete();
+            }
+            return back()->with('status', 'Usuarios eliminados.');
+        }
+
+        if ($data['action'] === 'activate') {
+            if (Schema::hasColumn('users', 'is_active')) {
+                User::query()->whereIn('id', $ids)->update(['is_active' => 1]);
+            }
+            return back()->with('status', 'Usuarios activados.');
+        }
+
+        if ($data['action'] === 'deactivate') {
+            if (Schema::hasColumn('users', 'is_active')) {
+                User::query()->whereIn('id', $ids)->update(['is_active' => 0]);
+            }
+            return back()->with('status', 'Usuarios desactivados.');
+        }
+
+        return back();
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $q    = trim((string) $request->input('q'));
+        $role = trim((string) $request->input('role'));
+
+        $query = User::query()
+            ->when($q, function ($qq) use ($q) {
+                $qq->where(function ($w) use ($q) {
+                    $w->where('name','like',"%{$q}%")
+                      ->orWhere('email','like',"%{$q}%")
+                      ->orWhere('phone','like',"%{$q}%");
+                });
+            })
+            ->when($role, function ($qq) use ($role) {
+                $rolesDb = Role::query()->pluck('name')->all();
+                if (!empty($rolesDb)) {
+                    $qq->role($role);
+                } else {
+                    if (Schema::hasColumn('users','role')) {
+                        $qq->where('role', $role);
+                    }
+                }
+            })
+            ->latest('id');
+
+        $filename = 'users_' . now()->format('Ymd_His') . '.csv';
+
+        return response()->streamDownload(function () use ($query) {
+            $out = fopen('php://output', 'w');
+
+            fputcsv($out, ['id','name','email','phone','role','created_at']);
+
+            $query->chunk(500, function ($rows) use ($out) {
+                foreach ($rows as $u) {
+                    fputcsv($out, [
+                        $u->id,
+                        $u->name,
+                        $u->email,
+                        $u->phone,
+                        $u->role ?? '',
+                        optional($u->created_at)->toDateTimeString(),
+                    ]);
+                }
+            });
+
+            fclose($out);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }

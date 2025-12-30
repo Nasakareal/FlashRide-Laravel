@@ -1,86 +1,173 @@
+{{-- resources/views/layouts/app.blade.php --}}
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>@hasSection('title')@yield('title') · @endif {{ config('app.name', 'FlashRide') }}</title>
 
-  {{-- Tailwind (CDN) --}}
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand:'#FF1B8F', brandDark:'#E0147E', ink:'#0B0B0C' },
-          dropShadow: { glow:'0 0 25px rgba(255,27,143,.45)' },
-          boxShadow: {
-            soft: '0 10px 30px rgba(0,0,0,.35)',
-            glass: 'inset 0 1px 0 rgba(255,255,255,.08), 0 10px 30px rgba(255,27,143,.15)'
-          },
-          keyframes: {
-            floaty:{'0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-6px)'}},
-            gradient:{'0%,100%':{'background-position':'0% 50%'},'50%':{'background-position':'100% 50%'}},
-            spinSlow:{'0%':{transform:'rotate(0)'},'100%':{transform:'rotate(360deg)'}}
-          },
-          animation: {
-            floaty:'floaty 6s ease-in-out infinite',
-            gradient:'gradient 18s ease infinite',
-            spinSlow:'spinSlow 36s linear infinite'
-          }
-        }
-      }
-    }
-  </script>
+  <title>
+    @hasSection('title')@yield('title') · @endif {{ config('app.name', 'Taxi Seguro') }}
+  </title>
 
-  {{-- Fonts + Icons --}}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-  {{-- App Assets (si los usas con mix/vite puedes cambiar esto) --}}
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
   @stack('head')
+
   <style>
-    html,body{height:100%}
-    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:#060608; color:#EDEDED}
-    .noise:after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");mix-blend-mode:soft-light}
-    .card-glass{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px)}
-    .btn-neo{border:1px solid rgba(255,255,255,.12);background:radial-gradient(120% 120% at 10% 10%, rgba(255,27,143,.25), rgba(255,255,255,.03));box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 10px 30px rgba(255,27,143,.18);transition:.2s ease}
-    .btn-neo:hover{transform:translateY(-2px);box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 16px 40px rgba(255,27,143,.32)}
+    :root{
+      --brand:#FF1B8F;
+      --ink:#111827;
+      --muted:#6B7280;
+      --border:#E5E7EB;
+      --soft:#F8FAFC;
+    }
+
+    html,body{ height:100%; }
+
+    body{
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans;
+      background:#fff;
+      color:var(--ink);
+      padding-top: 96px; /* navbar fixed-top */
+    }
+
+    /* Navbar estilo gobierno */
+    .gov-nav{
+      background:#fff !important;
+      border-bottom: 1px solid var(--border);
+    }
+    .gov-nav .nav-link{
+      color:#111827 !important;
+      font-weight:600;
+      padding: .75rem .9rem;
+    }
+    .gov-nav .nav-link:hover{ color: var(--brand) !important; }
+    .gov-nav .navbar-toggler{ border-color: rgba(17,24,39,.18); }
+
+    /* Botones */
+    .btn-brand{
+      background: var(--brand);
+      border-color: var(--brand);
+      color:#fff;
+      font-weight:800;
+    }
+    .btn-brand:hover{
+      background: #e0147e;
+      border-color: #e0147e;
+      color:#fff;
+    }
+    .btn-outline-brand{
+      border:1px solid var(--brand);
+      color: var(--brand);
+      font-weight:800;
+      background:#fff;
+    }
+    .btn-outline-brand:hover{
+      background: rgba(255,27,143,.08);
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
+    /* “Hero” reusable */
+    .hero{
+      background: linear-gradient(180deg, #ffffff 0%, var(--soft) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      font-size:.85rem;
+      font-weight:700;
+      color:#111827;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius: 999px;
+      padding: .45rem .75rem;
+    }
+    .hero h1{
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+    .hero p{ color: var(--muted); }
+
+    /* Cards */
+    .card-soft{
+      border:1px solid var(--border);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: 0 6px 18px rgba(17,24,39,.06);
+      height:100%;
+    }
+    .icon-pill{
+      width:44px;
+      height:44px;
+      border-radius: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,27,143,.10);
+      color: var(--brand);
+    }
+
+    .section-title{
+      font-weight: 900;
+      letter-spacing: -0.01em;
+    }
+
+    footer{
+      border-top: 1px solid var(--border);
+      background:#fff;
+    }
+    .footer-link{ color:#111827; text-decoration:none; font-weight:700; }
+    .footer-link:hover{ color: var(--brand); }
+
+    .brand-logo img{ height:64px; }
+    @media (min-width: 992px){
+      body{ padding-top: 92px; }
+      .brand-logo img{ height:72px; }
+    }
   </style>
+
+  @stack('styles')
 </head>
-<body class="noise h-full overflow-x-hidden">
-  {{-- BG dinámico --}}
-  <div aria-hidden="true" class="pointer-events-none fixed inset-0">
-    <div class="absolute -top-1/3 -left-1/3 w-[70vw] h-[70vw] rounded-full blur-3xl opacity-30 animate-spinSlow"
-         style="background: radial-gradient(45% 45% at 50% 50%, rgba(255,27,143,.5), transparent 60%);"></div>
-    <div class="absolute -bottom-1/3 -right-1/3 w-[70vw] h-[70vw] rounded-full blur-3xl opacity-30 animate-spinSlow"
-         style="animation-direction: reverse; background: radial-gradient(50% 50% at 50% 50%, rgba(86,167,255,.35), transparent 60%);"></div>
-    <div class="absolute inset-0 bg-[length:300%_300%] animate-gradient opacity-25"
-         style="background-image: linear-gradient(120deg, rgba(255,27,143,.12), rgba(86,167,255,.10), rgba(255,27,143,.12));"></div>
-  </div>
+
+<body>
 
   {{-- NAV --}}
-  @include('layouts.partials.nav')
+  @include('layouts.partials.gov-nav')
 
-  {{-- MAIN --}}
-  <main class="relative z-10 min-h-[calc(100vh-160px)]">
-    @hasSection('page-header')
-      <section class="max-w-7xl mx-auto px-6 md:px-10 pt-10">
+  {{-- PAGE HEADER --}}
+  @hasSection('page-header')
+    <header class="hero py-5">
+      <div class="container py-2 py-lg-4">
         @yield('page-header')
-      </section>
-    @endif
+      </div>
+    </header>
+  @endif
 
-    <section class="max-w-7xl mx-auto px-6 md:px-10 py-8">
+  {{-- CONTENT --}}
+  <main class="py-5">
+    <div class="container">
       @yield('content')
-    </section>
+    </div>
   </main>
 
   {{-- FOOTER --}}
-  @include('layouts.partials.footer')
+  @include('layouts.partials.gov-footer')
 
-  {{-- Scripts opcionales --}}
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   @stack('scripts')
 </body>
 </html>

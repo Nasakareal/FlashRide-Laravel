@@ -32,6 +32,11 @@ class Vehicle extends Model
         'last_located_at' => 'datetime',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function driverAssignments()
     {
         return $this->hasMany(\App\Models\DriverVehicleAssignment::class, 'vehicle_id');
@@ -50,5 +55,10 @@ class Vehicle extends Model
     public function activeRouteAssignment()
     {
         return $this->hasOne(\App\Models\RouteVehicleAssignment::class, 'vehicle_id')->where('active', 1)->whereNull('ended_at');
+    }
+
+    public function transitRoute()
+    {
+        return $this->belongsTo(TransitRoute::class, 'transit_route_id');
     }
 }

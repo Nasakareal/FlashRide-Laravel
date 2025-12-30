@@ -4,7 +4,14 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\Auth"
+    "\\app\\Http\\Controllers\\Admin",
+    "\\resources",
+    "\\resources\\views",
+    "\\resources\\views\\admin",
+    "\\resources\\views\\admin\\users",
+    "\\resources\\views\\layouts",
+    "\\resources\\views\\layouts\\partials"
   ],
+  "SelectedNode": "\\resources\\views\\layouts\\partials\\gov-nav.blade.php",
   "PreviewInSolutionExplorer": false
 }
