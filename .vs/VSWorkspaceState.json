@@ -8,10 +8,8 @@
     "\\resources",
     "\\resources\\views",
     "\\resources\\views\\admin",
-    "\\resources\\views\\admin\\users",
-    "\\resources\\views\\layouts",
-    "\\resources\\views\\layouts\\partials"
+    "\\resources\\views\\admin\\vehicles"
   ],
-  "SelectedNode": "\\resources\\views\\layouts\\partials\\gov-nav.blade.php",
+  "SelectedNode": "\\resources\\views\\admin\\vehicles\\show.blade.php",
   "PreviewInSolutionExplorer": false
 }

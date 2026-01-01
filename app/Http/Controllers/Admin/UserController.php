@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -68,9 +69,12 @@ class UserController extends Controller
         $data = $request->validate([
             'name'     => ['required','string','max:191'],
             'email'    => ['required','email','max:191','unique:users,email'],
-            'phone'    => ['nullable','string','max:50'],
-            'password' => ['required','string','min:6'],
+            'phone' => ['required','string','max:50'],
+            'password' => ['required','string',Password::min(8)->mixedCase()->numbers()->symbols(),],
             'role'     => ['required', Rule::in($rolesValidos)],
+        ], [
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.*' => 'La contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un símbolo.',
         ]);
 
         $user = new User();
@@ -121,9 +125,11 @@ class UserController extends Controller
         $data = $request->validate([
             'name'     => ['required','string','max:191'],
             'email'    => ['required','email','max:191', Rule::unique('users','email')->ignore($user->id)],
-            'phone'    => ['nullable','string','max:50'],
-            'password' => ['nullable','string','min:6'],
+            'phone'    => ['required','string','max:50'],
+            'password' => ['nullable','string',Password::min(8)->mixedCase()->numbers()->symbols(),],
             'role'     => ['required', Rule::in($rolesValidos)],
+        ], [
+            'password.*' => 'La contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un símbolo.',
         ]);
 
         $user->name  = $data['name'];

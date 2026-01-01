@@ -37,35 +37,70 @@ class User extends Authenticatable
         'lng'               => 'float',
     ];
 
-    public function trips()
+    // -------------------------
+    // Relaciones
+    // -------------------------
+
+    public function driverProfile()
     {
-        return $this->hasMany(Trip::class, 'driver_id');
+        return $this->hasOne(\App\Models\Driver::class, 'user_id');
     }
 
     public function vehicleAssignments()
     {
-        return $this->hasMany(DriverVehicleAssignment::class, 'driver_id');
+        return $this->hasMany(\App\Models\DriverVehicleAssignment::class, 'driver_id');
     }
 
     public function activeVehicleAssignment()
     {
-        return $this->hasOne(DriverVehicleAssignment::class, 'driver_id')
+        return $this->hasOne(\App\Models\DriverVehicleAssignment::class, 'driver_id')
             ->where('active', 1)
             ->whereNull('ended_at');
     }
 
     public function passengerTrips()
     {
-        return $this->hasMany(Trip::class, 'user_id');
+        return $this->hasMany(\App\Models\Trip::class, 'user_id');
     }
 
     public function driverTrips()
     {
-        return $this->hasMany(Trip::class, 'driver_id');
+        return $this->hasMany(\App\Models\Trip::class, 'driver_id');
     }
 
-    // --- Scopes útiles (opcionales) ---
-    public function scopeDrivers($q)   { return $q->role('driver'); }
-    public function scopeAdmins($q)    { return $q->role('admin'); }
-    public function scopePassengers($q){ return $q->role('passenger'); }
+    // (si todavía usas trips() en otro lado, lo puedes dejar)
+    public function trips()
+    {
+        return $this->hasMany(\App\Models\Trip::class, 'driver_id');
+    }
+
+    // -------------------------
+    // Scopes (Spatie o columna role)
+    // -------------------------
+    public function scopeDrivers($q)
+    {
+        try {
+            return $q->role('driver');
+        } catch (\Throwable $e) {
+            return $q->where('role', 'driver');
+        }
+    }
+
+    public function scopeAdmins($q)
+    {
+        try {
+            return $q->role('admin');
+        } catch (\Throwable $e) {
+            return $q->where('role', 'admin');
+        }
+    }
+
+    public function scopePassengers($q)
+    {
+        try {
+            return $q->role('passenger');
+        } catch (\Throwable $e) {
+            return $q->where('role', 'passenger');
+        }
+    }
 }

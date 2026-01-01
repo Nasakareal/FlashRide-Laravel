@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\PayoutController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\TransitRouteController;
 
 // ------------------------------
 // Debug (útil mientras configuras)
@@ -91,6 +92,12 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::post('vehicles/bulk',                 [VehicleController::class,'bulk'])->name('vehicles.bulk');
             Route::get('vehicles/export/csv',            [VehicleController::class,'exportCsv'])->name('vehicles.export.csv');
 
+            // ========= VEHÍCULOS: ASIGNAR CONDUCTOR / RUTA =========
+            Route::get('vehicles/{vehicle}/assign-driver', [VehicleController::class, 'assignDriverForm'])->name('vehicles.assign-driver');
+            Route::post('vehicles/{vehicle}/assign-driver', [VehicleController::class, 'assignDriverStore'])->name('vehicles.assign-driver.store');
+            Route::get('vehicles/{vehicle}/assign-route', [VehicleController::class, 'assignRouteForm'])->name('vehicles.assign-route');
+            Route::post('vehicles/{vehicle}/assign-route', [VehicleController::class, 'assignRouteStore'])->name('vehicles.assign-route.store');
+
             // ========= ASIGNACIONES Conductor ⇄ Vehículo =========
             Route::resource('assignments', AssignmentController::class)->only(['index','store','destroy']);
             Route::post('assignments/{assignment}/end', [AssignmentController::class,'end'])->name('assignments.end');
@@ -127,5 +134,12 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::get('search/drivers',  [SearchController::class,'drivers'])->name('search.drivers');
             Route::get('search/vehicles', [SearchController::class,'vehicles'])->name('search.vehicles');
             Route::get('search/trips',    [SearchController::class,'trips'])->name('search.trips');
+
+            // ========= RUTAS =========
+            Route::resource('routes', TransitRouteController::class);
+            Route::post('routes/{route}/activate',   [TransitRouteController::class,'activate'])->name('routes.activate');
+            Route::post('routes/{route}/deactivate', [TransitRouteController::class,'deactivate'])->name('routes.deactivate');
+            Route::post('routes/bulk',               [TransitRouteController::class,'bulk'])->name('routes.bulk');
+            Route::get('routes/export/csv',          [TransitRouteController::class,'exportCsv'])->name('routes.export.csv');
         });
 });

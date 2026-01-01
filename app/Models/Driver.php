@@ -6,34 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
 {
+    protected $table = 'drivers';
+
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'status',
-        'is_banned',
-        'rating',
+        'user_id',
+        'license_number',
+        'license_expires_at',
+        'curp',
+        'rfc',
+        'birthdate',
+        'is_verified',
+        'verified_at',
+        'address',
+        'notes',
+        'rating_avg',
+        'rating_count',
     ];
 
     protected $casts = [
-        'is_banned' => 'boolean',
+        'license_expires_at' => 'date',
+        'birthdate'          => 'date',
+        'is_verified'        => 'boolean',
+        'verified_at'        => 'datetime',
+        'rating_avg'         => 'float',
+        'rating_count'       => 'integer',
     ];
 
-    // ───────── Relaciones ─────────
-
-    public function vehicles()
+    public function user()
     {
-        return $this->belongsToMany(Vehicle::class, 'assignments')
-            ->withTimestamps();
-    }
-
-    public function trips()
-    {
-        return $this->hasMany(Trip::class);
-    }
-
-    public function media()
-    {
-        return $this->hasMany(DriverMedia::class);
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 }

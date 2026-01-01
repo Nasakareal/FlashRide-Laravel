@@ -116,13 +116,13 @@
             <td class="text-end pe-4">
               <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ route('admin.users.show', $u) }}"
-                   class="btn btn-outline-secondary"
+                   class="btn btn-outline-info"
                    title="Ver">
                   <i class="fa-regular fa-eye"></i>
                 </a>
 
                 <a href="{{ route('admin.users.edit', $u) }}"
-                   class="btn btn-outline-primary"
+                   class="btn btn-outline-success"
                    title="Editar">
                   <i class="fa-regular fa-pen-to-square"></i>
                 </a>

@@ -21,6 +21,8 @@ class DriverVehicleAssignment extends Model
     ];
 
     protected $casts = [
+        'driver_id'  => 'integer',
+        'vehicle_id' => 'integer',
         'started_at' => 'datetime',
         'ended_at'   => 'datetime',
         'active'     => 'boolean',
@@ -29,12 +31,12 @@ class DriverVehicleAssignment extends Model
     // Relaciones
     public function driver()
     {
-        return $this->belongsTo(User::class, 'driver_id');
+        return $this->belongsTo(\App\Models\User::class, 'driver_id');
     }
 
     public function vehicle()
     {
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsTo(\App\Models\Vehicle::class, 'vehicle_id');
     }
 
     public function scopeActive($q)

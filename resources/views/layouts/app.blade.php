@@ -36,10 +36,9 @@
       font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans;
       background:#fff;
       color:var(--ink);
-      padding-top: 96px; /* navbar fixed-top */
+      padding-top: 96px;
     }
 
-    /* Navbar estilo gobierno */
     .gov-nav{
       background:#fff !important;
       border-bottom: 1px solid var(--border);
@@ -52,7 +51,6 @@
     .gov-nav .nav-link:hover{ color: var(--brand) !important; }
     .gov-nav .navbar-toggler{ border-color: rgba(17,24,39,.18); }
 
-    /* Botones */
     .btn-brand{
       background: var(--brand);
       border-color: var(--brand);
@@ -76,7 +74,6 @@
       color: var(--brand);
     }
 
-    /* “Hero” reusable */
     .hero{
       background: linear-gradient(180deg, #ffffff 0%, var(--soft) 100%);
       border-bottom: 1px solid var(--border);
@@ -100,7 +97,6 @@
     }
     .hero p{ color: var(--muted); }
 
-    /* Cards */
     .card-soft{
       border:1px solid var(--border);
       border-radius: 16px;
@@ -128,7 +124,11 @@
       border-top: 1px solid var(--border);
       background:#fff;
     }
-    .footer-link{ color:#111827; text-decoration:none; font-weight:700; }
+    .footer-link{
+      color:#111827;
+      text-decoration:none;
+      font-weight:700;
+    }
     .footer-link:hover{ color: var(--brand); }
 
     .brand-logo img{ height:64px; }
@@ -167,6 +167,48 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  {{-- SweetAlert: success --}}
+  @if (session('status'))
+    <script>
+      Swal.fire({
+        icon: 'success',
+        title: 'Listo',
+        text: @json(session('status')),
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#FF1B8F'
+      });
+    </script>
+  @endif
+
+  {{-- SweetAlert: error --}}
+  @if (session('error'))
+    <script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: @json(session('error')),
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#FF1B8F'
+      });
+    </script>
+  @endif
+
+  {{-- SweetAlert: validation errors --}}
+  @if ($errors->any())
+    <script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Revisa el formulario',
+        html: `{!! implode('<br>', $errors->all()) !!}`,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#FF1B8F'
+      });
+    </script>
+  @endif
 
   @stack('scripts')
 </body>

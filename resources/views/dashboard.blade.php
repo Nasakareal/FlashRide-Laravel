@@ -1,4 +1,3 @@
-{{-- resources/views/dashboard.blade.php --}}
 @extends('layouts.app')
 
 @section('title','Dashboard')
@@ -91,10 +90,10 @@
           </div>
 
           <div class="d-flex gap-2 mt-3">
-            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.itineraries.index') }}">
+            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.routes.index') }}">
               <i class="fa-solid fa-list me-2"></i> Ver
             </a>
-            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.itineraries.create') }}">
+            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.routes.create') }}">
               <i class="fa-solid fa-plus me-2"></i> Nuevo
             </a>
           </div>
