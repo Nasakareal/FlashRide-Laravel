@@ -7,24 +7,23 @@ use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        \App\Models\Ticket::class => \App\Policies\TicketPolicy::class,
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
     public function boot()
     {
         $this->registerPolicies();
 
-        //
+        Gate::before(function ($user, $ability) {
+            try {
+                if ($user->hasRole('super_admin') || $user->hasRole('superadmin')) {
+                    return true;
+                }
+            } catch (\Throwable $e) {
+            }
+
+            return null;
+        });
     }
 }

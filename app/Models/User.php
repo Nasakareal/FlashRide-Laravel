@@ -37,25 +37,9 @@ class User extends Authenticatable
         'lng'               => 'float',
     ];
 
-    // -------------------------
-    // Relaciones
-    // -------------------------
-
     public function driverProfile()
     {
         return $this->hasOne(\App\Models\Driver::class, 'user_id');
-    }
-
-    public function vehicleAssignments()
-    {
-        return $this->hasMany(\App\Models\DriverVehicleAssignment::class, 'driver_id');
-    }
-
-    public function activeVehicleAssignment()
-    {
-        return $this->hasOne(\App\Models\DriverVehicleAssignment::class, 'driver_id')
-            ->where('active', 1)
-            ->whereNull('ended_at');
     }
 
     public function passengerTrips()
@@ -68,15 +52,35 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Trip::class, 'driver_id');
     }
 
-    // (si todavía usas trips() en otro lado, lo puedes dejar)
     public function trips()
     {
         return $this->hasMany(\App\Models\Trip::class, 'driver_id');
     }
 
-    // -------------------------
-    // Scopes (Spatie o columna role)
-    // -------------------------
+    public function activeDriverVehicleAssignment()
+    {
+        $driver = $this->driverProfile;
+
+        if (!$driver) {
+            return null;
+        }
+
+        return $driver->activeVehicleAssignment()
+            ->with('vehicle')
+            ->first();
+    }
+
+    public function activeVehicle()
+    {
+        $assign = $this->activeDriverVehicleAssignment();
+        return $assign ? $assign->vehicle : null;
+    }
+
+    public function hasActiveVehicle(): bool
+    {
+        return (bool) $this->activeVehicle();
+    }
+
     public function scopeDrivers($q)
     {
         try {

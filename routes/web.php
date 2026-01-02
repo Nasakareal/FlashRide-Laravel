@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\TransitRouteController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 
 // ------------------------------
 // Debug (útil mientras configuras)
@@ -81,7 +82,7 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::post('drivers/bulk',            [DriverController::class,'bulk'])->name('drivers.bulk');
             Route::get('drivers/export/csv',       [DriverController::class,'exportCsv'])->name('drivers.export.csv');
 
-            // Archivos del conductor (licencias, pólizas, etc.)
+            // Archivos del conductor
             Route::post('drivers/{driver}/media',           [DriverMediaController::class,'store'])->name('drivers.media.store');
             Route::delete('drivers/{driver}/media/{media}', [DriverMediaController::class,'destroy'])->name('drivers.media.destroy');
 
@@ -93,12 +94,12 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::get('vehicles/export/csv',            [VehicleController::class,'exportCsv'])->name('vehicles.export.csv');
 
             // ========= VEHÍCULOS: ASIGNAR CONDUCTOR / RUTA =========
-            Route::get('vehicles/{vehicle}/assign-driver', [VehicleController::class, 'assignDriverForm'])->name('vehicles.assign-driver');
+            Route::get('vehicles/{vehicle}/assign-driver',  [VehicleController::class, 'assignDriverForm'])->name('vehicles.assign-driver');
             Route::post('vehicles/{vehicle}/assign-driver', [VehicleController::class, 'assignDriverStore'])->name('vehicles.assign-driver.store');
-            Route::get('vehicles/{vehicle}/assign-route', [VehicleController::class, 'assignRouteForm'])->name('vehicles.assign-route');
-            Route::post('vehicles/{vehicle}/assign-route', [VehicleController::class, 'assignRouteStore'])->name('vehicles.assign-route.store');
+            Route::get('vehicles/{vehicle}/assign-route',   [VehicleController::class, 'assignRouteForm'])->name('vehicles.assign-route');
+            Route::post('vehicles/{vehicle}/assign-route',  [VehicleController::class, 'assignRouteStore'])->name('vehicles.assign-route.store');
 
-            // ========= ASIGNACIONES Conductor ⇄ Vehículo =========
+            // ========= ASIGNACIONES =========
             Route::resource('assignments', AssignmentController::class)->only(['index','store','destroy']);
             Route::post('assignments/{assignment}/end', [AssignmentController::class,'end'])->name('assignments.end');
 
@@ -108,16 +109,16 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::post('trips/{trip}/finish',  [TripController::class,'finish'])->name('trips.finish');
             Route::get('trips/export/csv',      [TripController::class,'exportCsv'])->name('trips.export.csv');
 
-            // ========= INCIDENTES DE PÁNICO =========
+            // ========= PÁNICO =========
             Route::resource('panic', PanicController::class)->only(['index','show','update']);
             Route::post('panic/{incident}/close', [PanicController::class,'close'])->name('panic.close');
 
-            // ========= ITINERARIOS / RUTAS (camión) =========
+            // ========= ITINERARIOS =========
             Route::resource('itineraries', ItineraryController::class);
             Route::post('itineraries/{itinerary}/publish',   [ItineraryController::class,'publish'])->name('itineraries.publish');
             Route::post('itineraries/{itinerary}/unpublish', [ItineraryController::class,'unpublish'])->name('itineraries.unpublish');
 
-            // ========= PAGOS / LIQUIDACIONES =========
+            // ========= PAGOS =========
             Route::resource('payouts', PayoutController::class)->only(['index','show','store']);
             Route::get('payouts/export/csv', [PayoutController::class,'exportCsv'])->name('payouts.export.csv');
 
@@ -130,7 +131,7 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::get('settings',  [SettingController::class,'index'])->name('settings.index');
             Route::post('settings', [SettingController::class,'store'])->name('settings.store');
 
-            // ========= SEARCH / DATATABLES =========
+            // ========= SEARCH =========
             Route::get('search/drivers',  [SearchController::class,'drivers'])->name('search.drivers');
             Route::get('search/vehicles', [SearchController::class,'vehicles'])->name('search.vehicles');
             Route::get('search/trips',    [SearchController::class,'trips'])->name('search.trips');
@@ -142,4 +143,19 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::post('routes/bulk',               [TransitRouteController::class,'bulk'])->name('routes.bulk');
             Route::get('routes/export/csv',          [TransitRouteController::class,'exportCsv'])->name('routes.export.csv');
         });
+
+    // ============================
+    // TICKETS (admin + support + super*)
+    // ============================
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::middleware('role:admin|support|super_admin|superadmin')->group(function () {
+            Route::get('tickets', [AdminTicketController::class, 'index'])->name('tickets.index');
+            Route::get('tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show')->whereNumber('ticket');
+
+            Route::post('tickets/{ticket}/claim', [AdminTicketController::class, 'claim'])->name('tickets.claim')->whereNumber('ticket');
+            Route::post('tickets/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('tickets.reply')->whereNumber('ticket');
+            Route::post('tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close')->whereNumber('ticket');
+        });
+    });
+
 });

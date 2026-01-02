@@ -28,10 +28,9 @@ class DriverVehicleAssignment extends Model
         'active'     => 'boolean',
     ];
 
-    // Relaciones
     public function driver()
     {
-        return $this->belongsTo(\App\Models\User::class, 'driver_id');
+        return $this->belongsTo(\App\Models\Driver::class, 'driver_id');
     }
 
     public function vehicle()

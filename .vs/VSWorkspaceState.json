@@ -4,12 +4,8 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\Admin",
-    "\\resources",
-    "\\resources\\views",
-    "\\resources\\views\\admin",
-    "\\resources\\views\\admin\\vehicles"
+    "\\app\\Http\\Controllers\\API"
   ],
-  "SelectedNode": "\\resources\\views\\admin\\vehicles\\show.blade.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\TicketController.php",
   "PreviewInSolutionExplorer": false
 }

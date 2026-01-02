@@ -6,6 +6,20 @@
   $to = function(string $name, string $fallback = '#', array $params = []) {
     return \Illuminate\Support\Facades\Route::has($name) ? route($name, $params) : $fallback;
   };
+
+  // Roles (Spatie o columna role)
+  $user = auth()->user();
+
+  $isSupport = false;
+  $isAdminLike = false;
+
+  try { $isSupport = $user && $user->hasRole('support'); }
+  catch (\Throwable $e) { $isSupport = ($user && (($user->role ?? null) === 'support')); }
+
+  try { $isAdminLike = $user && $user->hasAnyRole(['admin','super_admin','superadmin']); }
+  catch (\Throwable $e) { $isAdminLike = ($user && in_array(($user->role ?? null), ['admin','super_admin','superadmin'], true)); }
+
+  $canSeeTickets = $isSupport || $isAdminLike;
 @endphp
 
 @section('content')
@@ -100,32 +114,61 @@
         </div>
       </div>
 
+      {{-- 4ta tarjeta: Admin ve Usuarios / Support ve Tickets --}}
       <div class="col-12 col-md-6 col-lg-3">
         <div class="card-soft p-4">
           <div class="d-flex align-items-start justify-content-between">
             <div>
-              <div class="icon-pill mb-3"><i class="fa-solid fa-user-group"></i></div>
-              <div class="fw-black" style="font-weight:900;">Usuarios</div>
-              <div class="small" style="color:var(--muted);">Admins, roles y acceso.</div>
+              @if($canSeeTickets && !$isAdminLike)
+                <div class="icon-pill mb-3"><i class="fa-solid fa-headset"></i></div>
+                <div class="fw-black" style="font-weight:900;">Tickets</div>
+                <div class="small" style="color:var(--muted);">Soporte y seguimiento.</div>
+              @else
+                <div class="icon-pill mb-3"><i class="fa-solid fa-user-group"></i></div>
+                <div class="fw-black" style="font-weight:900;">Usuarios</div>
+                <div class="small" style="color:var(--muted);">Admins, roles y acceso.</div>
+              @endif
             </div>
+
             <div class="text-end">
-              <div class="small" style="color:var(--muted);">Total</div>
+              <div class="small" style="color:var(--muted);">
+                @if($canSeeTickets && !$isAdminLike)
+                  Abiertos
+                @else
+                  Total
+                @endif
+              </div>
               <div class="h4 mb-0 fw-black" style="font-weight:900;">
-                {{ isset($usersCount) ? number_format($usersCount) : '—' }}
+                @if($canSeeTickets && !$isAdminLike)
+                  {{ isset($ticketsOpenCount) ? number_format($ticketsOpenCount) : '—' }}
+                @else
+                  {{ isset($usersCount) ? number_format($usersCount) : '—' }}
+                @endif
               </div>
             </div>
           </div>
 
           <div class="d-flex gap-2 mt-3">
-            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.users.index') }}">
-              <i class="fa-solid fa-list me-2"></i> Ver
-            </a>
-            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.users.create') }}">
-              <i class="fa-solid fa-plus me-2"></i> Nuevo
-            </a>
+            @if($canSeeTickets && !$isAdminLike)
+              <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.tickets.index') }}">
+                <i class="fa-solid fa-inbox me-2"></i> Ver
+              </a>
+              <a class="btn btn-outline-secondary btn-sm px-3 py-2"
+                 href="{{ $to('admin.tickets.index', '#', ['unassigned' => 1]) }}">
+                <i class="fa-solid fa-bolt me-2"></i> Sin asignar
+              </a>
+            @else
+              <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.users.index') }}">
+                <i class="fa-solid fa-list me-2"></i> Ver
+              </a>
+              <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.users.create') }}">
+                <i class="fa-solid fa-plus me-2"></i> Nuevo
+              </a>
+            @endif
           </div>
         </div>
       </div>
+
     </div>
   </section>
 
@@ -144,6 +187,11 @@
               <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.panic.index') }}">
                 <i class="fa-solid fa-triangle-exclamation me-2"></i> Pánico
               </a>
+              @if($canSeeTickets)
+                <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.tickets.index') }}">
+                  <i class="fa-solid fa-headset me-2"></i> Tickets
+                </a>
+              @endif
             </div>
           </div>
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\API\DriverController;
 use App\Http\Controllers\API\TransitController;
 use App\Http\Controllers\API\DriverVehicleController;
 use App\Http\Controllers\API\RouteVehicleController;
+use App\Http\Controllers\API\TicketController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) { return $request->user(); });
 
@@ -71,6 +72,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/routes/{route}/assign',       [RouteVehicleController::class, 'assign'])->whereNumber('route');
     Route::post('/routes/{route}/unassign',     [RouteVehicleController::class, 'unassign'])->whereNumber('route');
     Route::get('/routes/vehicles/available',    [RouteVehicleController::class, 'availableVehicles']);
+
+    // Tickets
+    Route::get('/tickets', [TicketController::class, 'index']);
+    Route::post('/tickets', [TicketController::class, 'store']);
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->whereNumber('ticket');
+    Route::post('/tickets/{ticket}/claim', [TicketController::class, 'claim'])->whereNumber('ticket');
+    Route::post('/tickets/{ticket}/messages', [TicketController::class, 'message'])->whereNumber('ticket');
+    Route::post('/tickets/{ticket}/close', [TicketController::class, 'close'])->whereNumber('ticket');
 });
 
 Route::prefix('transit')->group(function () {

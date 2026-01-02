@@ -36,4 +36,17 @@ class Driver extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
+
+    public function vehicleAssignments()
+    {
+        return $this->hasMany(\App\Models\DriverVehicleAssignment::class, 'driver_id');
+    }
+
+    public function activeVehicleAssignment()
+    {
+        return $this->hasOne(\App\Models\DriverVehicleAssignment::class, 'driver_id')
+            ->where('active', 1)
+            ->whereNull('ended_at')
+            ->latest('started_at');
+    }
 }
