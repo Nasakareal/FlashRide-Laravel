@@ -21,7 +21,9 @@ class TicketController extends Controller
 
     private function isAdminLike($user): bool
     {
-        return $this->isRole($user, 'admin') || $this->isRole($user, 'super_admin') || $this->isRole($user, 'superadmin');
+        return $this->isRole($user, 'admin')
+            || $this->isRole($user, 'super_admin')
+            || $this->isRole($user, 'superadmin');
     }
 
     private function isSupport($user): bool
@@ -38,7 +40,6 @@ class TicketController extends Controller
             ->orderByDesc('id');
 
         if ($this->isAdminLike($user)) {
-            // sin filtro
         } elseif ($this->isSupport($user)) {
             $includeUnassigned = (int) $request->query('unassigned', 0) === 1;
 
@@ -62,13 +63,9 @@ class TicketController extends Controller
         ]);
     }
 
-    /**
-     * POST /tickets
-     */
     public function store(Request $request)
     {
         $user = $request->user();
-        $this->authorize('create', Ticket::class);
 
         $data = $request->validate([
             'subject'      => ['nullable', 'string', 'max:191'],
@@ -78,31 +75,30 @@ class TicketController extends Controller
             'context_id'   => ['nullable', 'integer'],
         ]);
 
-        $ticket = Ticket::create([
-            'created_by_id' => $user->id,
-            'assigned_to_id' => null,
-            'subject' => $data['subject'] ?? null,
-            'priority' => $data['priority'] ?? 'normal',
-            'status' => 'open',
-            'context_type' => $data['context_type'] ?? null,
-            'context_id' => $data['context_id'] ?? null,
-        ]);
+        return DB::transaction(function () use ($user, $data) {
+            $ticket = Ticket::create([
+                'created_by_id' => $user->id,
+                'assigned_to_id' => null,
+                'subject' => $data['subject'] ?? null,
+                'priority' => $data['priority'] ?? 'normal',
+                'status' => 'open',
+                'context_type' => $data['context_type'] ?? null,
+                'context_id' => $data['context_id'] ?? null,
+            ]);
 
-        TicketMessage::create([
-            'ticket_id' => $ticket->id,
-            'sender_id' => $user->id,
-            'message' => $data['message'],
-        ]);
+            TicketMessage::create([
+                'ticket_id' => $ticket->id,
+                'sender_id' => $user->id,
+                'message' => $data['message'],
+            ]);
 
-        return response()->json([
-            'ok' => true,
-            'data' => $ticket->load(['createdBy', 'assignedTo', 'messages.sender']),
-        ], 201);
+            return response()->json([
+                'ok' => true,
+                'data' => $ticket->load(['createdBy', 'assignedTo', 'messages.sender']),
+            ], 201);
+        });
     }
 
-    /**
-     * GET /tickets/{ticket}
-     */
     public function show(Request $request, Ticket $ticket)
     {
         $this->authorize('view', $ticket);
@@ -119,17 +115,12 @@ class TicketController extends Controller
         ]);
     }
 
-    /**
-     * POST /tickets/{ticket}/claim
-     * Support toma ticket (atómico)
-     */
     public function claim(Request $request, Ticket $ticket)
     {
         $user = $request->user();
         $this->authorize('claim', $ticket);
 
         $out = DB::transaction(function () use ($user, $ticket) {
-
             $updated = Ticket::where('id', $ticket->id)
                 ->whereNull('assigned_to_id')
                 ->update([
@@ -147,7 +138,7 @@ class TicketController extends Controller
                 'message' => 'Ticket tomado por soporte.',
             ]);
 
-            return Ticket::with(['createdBy','assignedTo','messages.sender'])->find($ticket->id);
+            return Ticket::with(['createdBy', 'assignedTo', 'messages.sender'])->find($ticket->id);
         });
 
         if (!$out) {
@@ -157,12 +148,12 @@ class TicketController extends Controller
             ], 409);
         }
 
-        return response()->json(['ok' => true, 'data' => $out]);
+        return response()->json([
+            'ok' => true,
+            'data' => $out,
+        ]);
     }
 
-    /**
-     * POST /tickets/{ticket}/messages
-     */
     public function message(Request $request, Ticket $ticket)
     {
         $user = $request->user();
@@ -172,35 +163,30 @@ class TicketController extends Controller
             'message' => ['required', 'string', 'min:1'],
         ]);
 
-        // Actualiza status según quién contestó
-        if ($this->isSupport($user) || $this->isAdminLike($user)) {
-            // soporte contestó -> queda esperando usuario
-            if (in_array($ticket->status, ['open', 'assigned', 'pending_user'], true)) {
-                $ticket->status = 'pending_user';
-            }
-        } else {
-            // usuario contestó
-            if ($ticket->assigned_to_id) {
-                $ticket->status = 'assigned';
+        return DB::transaction(function () use ($user, $ticket, $data) {
+            if ($this->isSupport($user) || $this->isAdminLike($user)) {
+                if (in_array($ticket->status, ['open', 'assigned', 'pending_user'], true)) {
+                    $ticket->status = 'pending_user';
+                }
             } else {
-                $ticket->status = 'open';
+                $ticket->status = $ticket->assigned_to_id ? 'assigned' : 'open';
             }
-        }
 
-        $ticket->save();
+            $ticket->save();
 
-        TicketMessage::create([
-            'ticket_id' => $ticket->id,
-            'sender_id' => $user->id,
-            'message' => $data['message'],
-        ]);
+            TicketMessage::create([
+                'ticket_id' => $ticket->id,
+                'sender_id' => $user->id,
+                'message' => $data['message'],
+            ]);
 
-        $ticket->load(['createdBy', 'assignedTo', 'messages.sender']);
+            $ticket->load(['createdBy', 'assignedTo', 'messages.sender']);
 
-        return response()->json([
-            'ok' => true,
-            'data' => $ticket,
-        ]);
+            return response()->json([
+                'ok' => true,
+                'data' => $ticket,
+            ]);
+        });
     }
 
     public function close(Request $request, Ticket $ticket)
@@ -212,22 +198,24 @@ class TicketController extends Controller
             'message' => ['nullable', 'string'],
         ]);
 
-        $ticket->status = 'closed';
-        $ticket->save();
+        return DB::transaction(function () use ($user, $ticket, $data) {
+            $ticket->status = 'closed';
+            $ticket->save();
 
-        if (!empty($data['message'])) {
-            TicketMessage::create([
-                'ticket_id' => $ticket->id,
-                'sender_id' => $user->id,
-                'message' => $data['message'],
+            if (!empty($data['message'])) {
+                TicketMessage::create([
+                    'ticket_id' => $ticket->id,
+                    'sender_id' => $user->id,
+                    'message' => $data['message'],
+                ]);
+            }
+
+            $ticket->load(['createdBy', 'assignedTo', 'messages.sender']);
+
+            return response()->json([
+                'ok' => true,
+                'data' => $ticket,
             ]);
-        }
-
-        $ticket->load(['createdBy', 'assignedTo', 'messages.sender']);
-
-        return response()->json([
-            'ok' => true,
-            'data' => $ticket,
-        ]);
+        });
     }
 }
