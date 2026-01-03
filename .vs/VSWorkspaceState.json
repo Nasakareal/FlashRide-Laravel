@@ -5,10 +5,9 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API",
-    "\\app\\Policies",
-    "\\app\\Providers",
-    "\\routes"
+    "\\app\\Models",
+    "\\app\\Providers"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\API\\TicketController.php",
+  "SelectedNode": "\\app\\Providers\\AuthServiceProvider.php",
   "PreviewInSolutionExplorer": false
 }
