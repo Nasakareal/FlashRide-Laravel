@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ride extends Model
 {
@@ -16,5 +17,18 @@ class Ride extends Model
         'estimated_cost',
         'status',
         'fase',
+
+        'driver_lat',
+        'driver_lng',
     ];
+
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'driver_id');
+    }
+
+    public function passenger(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'passenger_id');
+    }
 }

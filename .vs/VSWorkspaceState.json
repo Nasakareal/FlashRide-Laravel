@@ -5,8 +5,9 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API",
+    "\\app\\Models",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\API\\RideController.php",
+  "SelectedNode": "\\app\\Models\\Ride.php",
   "PreviewInSolutionExplorer": false
 }
