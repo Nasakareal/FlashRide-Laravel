@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RideController;
 use App\Http\Controllers\API\EmergencyController;
@@ -13,26 +14,33 @@ use App\Http\Controllers\API\DriverVehicleController;
 use App\Http\Controllers\API\RouteVehicleController;
 use App\Http\Controllers\API\TicketController;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) { return $request->user(); });
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    // PERFIL
     Route::get('/profile',           [AuthController::class, 'profile']);
     Route::put('/profile',           [AuthController::class, 'updateProfile']);
     Route::put('/profile/email',     [AuthController::class, 'updateEmail']);
     Route::post('/change-password',  [AuthController::class, 'changePassword']);
 
+    // DRIVERS (ADMIN)
     Route::get('/drivers',               [AuthController::class, 'listDrivers']);
     Route::post('/drivers',              [AuthController::class, 'registerDriver']);
     Route::get('/drivers/{id}/details',  [DriverController::class, 'details'])->whereNumber('id');
     Route::put('/drivers/{id}',          [DriverController::class, 'update'])->whereNumber('id');
     Route::delete('/drivers/{id}',       [DriverController::class, 'destroy'])->whereNumber('id');
 
+    // VEHICLES (ADMIN)
     Route::get('/vehicles',  [VehicleController::class, 'index']);
     Route::post('/vehicles', [VehicleController::class, 'store']);
 
+    // RIDES
     Route::get('/rides/active',          [RideController::class, 'active']);
     Route::get('/rides',                 [RideController::class, 'index']);
     Route::post('/rides',                [RideController::class, 'store']);
@@ -44,21 +52,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides/{id}/complete',  [RideController::class, 'complete'])->whereNumber('id');
     Route::post('/rides/{id}/fase',      [RideController::class, 'updateFase'])->whereNumber('id');
 
-    // ✅ ✅ ✅ AGREGADA: cancelar viaje (esto elimina el 404 en Flutter)
+    // ✅ CANCELAR VIAJE
     Route::post('/rides/{id}/cancel',    [RideController::class, 'cancel'])->whereNumber('id');
 
+    Route::get('/rides/{id}/driver-location', [RideController::class, 'driverLocation'])->whereNumber('id');
+
+    // COSTO ESTIMADO
     Route::post('/rides/estimate',       [RideController::class, 'estimateCost']);
 
+    // UBICACIÓN
     Route::post('/location/update', [RideController::class, 'updateLocation']);
     Route::post('/location/global', [RideController::class, 'updateGlobalLocation']);
     Route::get('/drivers/nearby',   [RideController::class, 'nearbyDrivers']);
 
+    // ONLINE / OFFLINE
     Route::post('/users/online',   [AuthController::class, 'markOnline']);
     Route::post('/users/offline',  [AuthController::class, 'markOffline']);
 
+    // PAGOS / PANICO
     Route::post('/payments', [PaymentController::class, 'store']);
     Route::post('/panic',    [EmergencyController::class, 'store']);
 
+    // TRANSIT (PING)
     Route::post('/transit/vehicles/{id}/ping', [TransitController::class, 'ping'])->whereNumber('id');
 
     // Chofer ↔ Vehículo
@@ -73,7 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/routes/{route}/unassign',     [RouteVehicleController::class, 'unassign'])->whereNumber('route');
     Route::get('/routes/vehicles/available',    [RouteVehicleController::class, 'availableVehicles']);
 
-    // Tickets
+    // TICKETS
     Route::get('/tickets', [TicketController::class, 'index']);
     Route::post('/tickets', [TicketController::class, 'store']);
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->whereNumber('ticket');
