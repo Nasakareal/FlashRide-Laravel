@@ -4,12 +4,12 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\API",
+    "\\app\\Http\\Controllers\\Admin",
     "\\app\\Http\\Middleware",
     "\\app\\Models",
     "\\app\\Providers",
     "\\routes"
   ],
-  "SelectedNode": "\\app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\Admin\\DriverController.php",
   "PreviewInSolutionExplorer": false
 }

@@ -31,7 +31,7 @@ class DriverController extends Controller
                     }
                 }
             })
-            ->with(['driverProfile', 'activeVehicleAssignment.vehicle'])
+            ->with(['driverProfile.activeVehicleAssignment.vehicle'])
             ->when($q, function ($query) use ($q) {
                 $query->where(function ($qq) use ($q) {
                     $qq->where('name', 'like', "%{$q}%")
