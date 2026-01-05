@@ -5,10 +5,13 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\Admin",
+    "\\app\\Models",
     "\\resources",
     "\\resources\\views",
     "\\resources\\views\\admin",
-    "\\resources\\views\\admin\\vehicles"
+    "\\resources\\views\\admin\\vehicles",
+    "\\routes"
   ],
+  "SelectedNode": "\\resources\\views\\admin\\vehicles\\assign-driver.blade.php",
   "PreviewInSolutionExplorer": false
 }

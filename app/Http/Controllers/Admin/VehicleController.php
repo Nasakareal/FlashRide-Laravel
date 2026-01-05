@@ -11,6 +11,8 @@ use App\Models\RouteVehicleAssignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Models\Driver;
+
 
 class VehicleController extends Controller
 {
@@ -222,19 +224,13 @@ class VehicleController extends Controller
         $vehicle->load([
             'user:id,name,email,phone',
             'activeDriverAssignment',
-            'activeDriverAssignment.driver:id,name,email,phone',
+            'activeDriverAssignment.driver',
         ]);
 
-        $driversQuery = User::query()->select('id', 'name', 'email', 'phone')->orderBy('name');
-
-        if (method_exists(User::class, 'role')) {
-            try {
-                $driversQuery->role('driver');
-            } catch (\Throwable $e) {
-            }
-        }
-
-        $drivers = $driversQuery->get();
+        $drivers = Driver::query()
+            ->with(['user:id,name,email,phone'])
+            ->orderBy('id')
+            ->get();
 
         return view('admin.vehicles.assign-driver', compact('vehicle', 'drivers'));
     }
@@ -242,11 +238,12 @@ class VehicleController extends Controller
     public function assignDriverStore(Request $request, Vehicle $vehicle)
     {
         $data = $request->validate([
-            'driver_id' => ['nullable', 'integer', Rule::exists('users', 'id')],
+            'driver_id' => ['nullable', 'integer', Rule::exists('drivers', 'id')],
             'notes'     => ['nullable', 'string', 'max:500'],
         ]);
 
         DB::transaction(function () use ($vehicle, $data) {
+
             DriverVehicleAssignment::query()
                 ->where('vehicle_id', $vehicle->id)
                 ->where('active', 1)

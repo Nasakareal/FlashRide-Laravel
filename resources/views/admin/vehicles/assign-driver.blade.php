@@ -57,16 +57,20 @@
 
         @php
           $currentAssign = $vehicle->activeDriverAssignment;
-          $currentDriver = optional($currentAssign)->driver;
+          $currentDriver = optional($currentAssign)->driver; // Driver (tabla drivers)
+          $currentUser   = optional($currentDriver)->user;   // User relacionado
         @endphp
 
-        @if($currentDriver)
+        @if($currentDriver && $currentUser)
           <div class="alert alert-info d-flex justify-content-between align-items-center">
             <div>
-              <div class="fw-semibold">{{ $currentDriver->name }}</div>
+              <div class="fw-semibold">{{ $currentUser->name }}</div>
               <div class="small text-muted">
-                {{ $currentDriver->email }}
-                @if($currentDriver->phone) · {{ $currentDriver->phone }} @endif
+                {{ $currentUser->email }}
+                @if($currentUser->phone) · {{ $currentUser->phone }} @endif
+              </div>
+              <div class="small text-muted">
+                DriverID: {{ $currentDriver->id }} · UserID: {{ $currentDriver->user_id }}
               </div>
               <div class="small text-muted">
                 Asignado desde: {{ optional($currentAssign->started_at)->format('d/m/Y H:i') }}
@@ -88,13 +92,20 @@
               Seleccionar conductor
             </label>
 
+            {{-- driver_id ahora es drivers.id --}}
             <select name="driver_id" class="form-select @error('driver_id') is-invalid @enderror" required>
               <option value="">Selecciona un conductor</option>
+
               @foreach($drivers as $d)
-                <option value="{{ $d->id }}" @selected(old('driver_id') == $d->id)>
-                  #{{ $d->id }} — {{ $d->name }}
-                  @if($d->phone) · {{ $d->phone }} @endif
-                  @if($d->email) · {{ $d->email }} @endif
+                @php
+                  $u = $d->user; // User relacionado al Driver
+                @endphp
+
+                <option value="{{ $d->id }}" @selected(old('driver_id', optional($currentDriver)->id) == $d->id)>
+                  DriverID: {{ $d->id }} · UserID: {{ $d->user_id }}
+                  — {{ $u?->name ?? 'Sin usuario' }}
+                  @if($u?->phone) · {{ $u->phone }} @endif
+                  @if($u?->email) · {{ $u->email }} @endif
                 </option>
               @endforeach
             </select>
@@ -102,6 +113,10 @@
             @error('driver_id')
               <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
+
+            <div class="form-text">
+              Nota: aquí se selecciona el <b>DriverID</b> (tabla <code>drivers</code>), no el <b>UserID</b>.
+            </div>
           </div>
 
           {{-- NOTAS --}}
@@ -129,7 +144,7 @@
 
             <button class="btn btn-brand px-4">
               <i class="fa-solid fa-user-check me-2"></i>
-              {{ $currentDriver ? 'Cambiar conductor' : 'Asignar conductor' }}
+              {{ ($currentDriver && $currentUser) ? 'Cambiar conductor' : 'Asignar conductor' }}
             </button>
           </div>
 
