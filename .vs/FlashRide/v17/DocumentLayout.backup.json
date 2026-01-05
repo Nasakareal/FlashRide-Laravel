@@ -7,6 +7,14 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\TicketController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Providers\\AuthServiceProvider.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Providers\\AuthServiceProvider.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Models\\User.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Models\\User.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Models\\TicketMessage.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Models\\TicketMessage.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -26,11 +34,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "AuthServiceProvider.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Providers\\AuthServiceProvider.php",
+              "RelativeDocumentMoniker": "app\\Providers\\AuthServiceProvider.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Providers\\AuthServiceProvider.php",
+              "RelativeToolTip": "app\\Providers\\AuthServiceProvider.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2026-01-03T09:56:41.242Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Models\\User.php",
+              "RelativeDocumentMoniker": "app\\Models\\User.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Models\\User.php",
+              "RelativeToolTip": "app\\Models\\User.php",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAkwG4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2026-01-03T09:54:31.687Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "TicketMessage.php",
               "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Models\\TicketMessage.php",
               "RelativeDocumentMoniker": "app\\Models\\TicketMessage.php",
@@ -38,12 +72,11 @@
               "RelativeToolTip": "app\\Models\\TicketMessage.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-03T09:44:48.438Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-03T09:44:48.438Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Ticket.php",
               "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Models\\Ticket.php",
               "RelativeDocumentMoniker": "app\\Models\\Ticket.php",
@@ -51,12 +84,11 @@
               "RelativeToolTip": "app\\Models\\Ticket.php",
               "ViewState": "AgIAAAcAAAAAAAAAAAAkwDcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-03T09:44:39.725Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-03T09:44:39.725Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "api.php",
               "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\routes\\api.php",
               "RelativeDocumentMoniker": "routes\\api.php",
@@ -64,8 +96,7 @@
               "RelativeToolTip": "routes\\api.php",
               "ViewState": "AgIAADkAAAAAAAAAAAAkwGkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-03T09:43:19.586Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-03T09:43:19.586Z"
             },
             {
               "$type": "Document",
@@ -75,7 +106,7 @@
               "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\TicketController.php",
               "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\TicketController.php",
               "RelativeToolTip": "app\\Http\\Controllers\\API\\TicketController.php",
-              "ViewState": "AgIAAK0AAAAAAAAAAAAkwN0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAOwAAAAAAAAAAAAkwBwBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2026-01-03T09:42:59.477Z",
               "EditorCaption": ""

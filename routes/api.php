@@ -44,15 +44,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rides/active',          [RideController::class, 'active']);
     Route::get('/rides',                 [RideController::class, 'index']);
     Route::post('/rides',                [RideController::class, 'store']);
-    Route::get('/rides/pending',         [RideController::class, 'pendingRides']);
+    Route::get('/rides/pending', [RideController::class, 'pendingRides'])->middleware('driver.hasVehicle');
     Route::get('/rides/{id}',            [RideController::class, 'show'])->whereNumber('id');
     Route::put('/rides/{id}',            [RideController::class, 'update'])->whereNumber('id');
+    Route::post('/rides/{id}/accept',    [RideController::class, 'accept'])->middleware('driver.hasVehicle')->whereNumber('id');
+    Route::post('/rides/{id}/complete',  [RideController::class, 'complete'])->middleware('driver.hasVehicle')->whereNumber('id');
+    Route::post('/rides/{id}/fase',      [RideController::class, 'updateFase'])->middleware('driver.hasVehicle')->whereNumber('id');
 
-    Route::post('/rides/{id}/accept',    [RideController::class, 'accept'])->whereNumber('id');
-    Route::post('/rides/{id}/complete',  [RideController::class, 'complete'])->whereNumber('id');
-    Route::post('/rides/{id}/fase',      [RideController::class, 'updateFase'])->whereNumber('id');
-
-    // ✅ CANCELAR VIAJE
+    // CANCELAR VIAJE
     Route::post('/rides/{id}/cancel',    [RideController::class, 'cancel'])->whereNumber('id');
 
     Route::get('/rides/{id}/driver-location', [RideController::class, 'driverLocation'])->whereNumber('id');
@@ -61,8 +60,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides/estimate',       [RideController::class, 'estimateCost']);
 
     // UBICACIÓN
-    Route::post('/location/update', [RideController::class, 'updateLocation']);
-    Route::post('/location/global', [RideController::class, 'updateGlobalLocation']);
+    Route::post('/location/update', [RideController::class, 'updateLocation'])
+        ->middleware('driver.hasVehicle');
+
+    Route::post('/location/global', [RideController::class, 'updateGlobalLocation'])
+        ->middleware('driver.hasVehicle');
+
     Route::get('/drivers/nearby',   [RideController::class, 'nearbyDrivers']);
 
     // ONLINE / OFFLINE

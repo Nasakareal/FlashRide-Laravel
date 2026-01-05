@@ -11,13 +11,25 @@ class EnsureDriverHasActiveVehicle
     {
         $user = $request->user();
 
-        if (!$user || ($user->role ?? null) !== 'driver') {
+        if (! $user) {
+            return $next($request);
+        }
+
+        $isDriver = false;
+
+        try {
+            $isDriver = $user->hasRole('driver');
+        } catch (\Throwable $e) {
+            $isDriver = (($user->role ?? null) === 'driver');
+        }
+
+        if (! $isDriver) {
             return $next($request);
         }
 
         $driver = $user->driverProfile;
 
-        if (!$driver) {
+        if (! $driver) {
             return response()->json([
                 'ok' => false,
                 'code' => 'DRIVER_PROFILE_MISSING',
@@ -27,7 +39,7 @@ class EnsureDriverHasActiveVehicle
 
         $active = $user->activeDriverVehicleAssignment();
 
-        if (!$active || !$active->vehicle) {
+        if (! $active || ! $active->vehicle) {
             return response()->json([
                 'ok' => false,
                 'code' => 'DRIVER_NO_VEHICLE',

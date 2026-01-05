@@ -5,9 +5,11 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API",
+    "\\app\\Http\\Middleware",
     "\\app\\Models",
-    "\\app\\Providers"
+    "\\app\\Providers",
+    "\\routes"
   ],
-  "SelectedNode": "\\app\\Providers\\AuthServiceProvider.php",
+  "SelectedNode": "\\app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php",
   "PreviewInSolutionExplorer": false
 }

@@ -225,11 +225,23 @@ class RideController extends Controller
         ]);
     }
 
-    public function accept($id)
+    public function accept(Request $request, $id)
     {
         $user = Auth::user();
+
         if ($user->role !== 'driver') {
             return response()->json(['message' => 'Solo los conductores pueden aceptar viajes.'], 403);
+        }
+
+        $activeVehicle = $request->attributes->get('active_vehicle');
+        $activeAssign  = $request->attributes->get('active_vehicle_assignment');
+
+        if (! $activeVehicle || ! $activeAssign) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'DRIVER_NO_VEHICLE',
+                'message' => 'No tienes vehículo asignado. Contacta a administración.',
+            ], 403);
         }
 
         return DB::transaction(function () use ($id, $user) {
@@ -238,6 +250,7 @@ class RideController extends Controller
             if (! $ride) {
                 return response()->json(['message' => 'Viaje no encontrado.'], 404);
             }
+
             if ($ride->status !== 'pending' || $ride->driver_id) {
                 return response()->json(['message' => 'Ya no disponible'], 409);
             }
