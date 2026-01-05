@@ -136,7 +136,7 @@ class DriverController extends Controller
     {
         $this->ensureIsDriver($driver);
 
-        $driver->load(['driverProfile', 'activeVehicleAssignment.vehicle']);
+        $driver->load(['driverProfile.activeVehicleAssignment.vehicle']);
 
         return view('admin.drivers.edit', compact('driver'));
     }

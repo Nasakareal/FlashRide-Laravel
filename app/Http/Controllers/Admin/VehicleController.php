@@ -6,12 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use App\Models\User;
 use App\Models\TransitRoute;
+use App\Models\DriverVehicleAssignment;
+use App\Models\RouteVehicleAssignment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class VehicleController extends Controller
 {
+    private function vehicleTypes(): array
+    {
+        return [
+            'combi',
+            'sedan',
+            'camion',
+        ];
+    }
+
     public function index(Request $request)
     {
         $q            = trim((string) $request->input('q'));
@@ -21,24 +32,24 @@ class VehicleController extends Controller
 
         $vehicles = Vehicle::query()
             ->with([
-              'user:id,name,email,phone',
-              'transitRoute:id,short_name,long_name',
-              'activeDriverAssignment',
-              'activeDriverAssignment.driver:id,name,email,phone',
-              'activeRouteAssignment',
-              'activeRouteAssignment.route:id,short_name,long_name',
+                'user:id,name,email,phone',
+                'transitRoute:id,short_name,long_name',
+                'activeDriverAssignment',
+                'activeDriverAssignment.driver:id,name,email,phone',
+                'activeRouteAssignment',
+                'activeRouteAssignment.route:id,short_name,long_name',
             ])
             ->when($q, function ($query) use ($q) {
                 $query->where(function ($w) use ($q) {
                     $w->where('brand', 'like', "%{$q}%")
-                      ->orWhere('model', 'like', "%{$q}%")
-                      ->orWhere('color', 'like', "%{$q}%")
-                      ->orWhere('plate_number', 'like', "%{$q}%");
+                        ->orWhere('model', 'like', "%{$q}%")
+                        ->orWhere('color', 'like', "%{$q}%")
+                        ->orWhere('plate_number', 'like', "%{$q}%");
                 })
                 ->orWhereHas('user', function ($u) use ($q) {
                     $u->where('name', 'like', "%{$q}%")
-                      ->orWhere('email', 'like', "%{$q}%")
-                      ->orWhere('phone', 'like', "%{$q}%");
+                        ->orWhere('email', 'like', "%{$q}%")
+                        ->orWhere('phone', 'like', "%{$q}%");
                 });
             })
             ->when($vehicle_type, function ($query) use ($vehicle_type) {
@@ -51,8 +62,10 @@ class VehicleController extends Controller
                     $query->where('transit_route_id', (int) $route_id);
                 }
             })
-            ->when($owner_id, function ($query) use ($owner_id) {
-                if (is_numeric($owner_id)) {
+            ->when($owner_id !== '', function ($query) use ($owner_id) {
+                if ($owner_id === 'null') {
+                    $query->whereNull('user_id');
+                } elseif (is_numeric($owner_id)) {
                     $query->where('user_id', (int) $owner_id);
                 }
             })
@@ -60,21 +73,14 @@ class VehicleController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $vehicleTypes = Vehicle::query()
-            ->select('vehicle_type')
-            ->distinct()
-            ->orderBy('vehicle_type')
-            ->pluck('vehicle_type')
-            ->filter()
-            ->values()
-            ->all();
+        $vehicleTypes = $this->vehicleTypes();
 
         $routes = class_exists(TransitRoute::class)
             ? TransitRoute::query()->orderBy('id')->get()
             : collect();
 
         $owners = User::query()
-            ->select('id','name','email','phone')
+            ->select('id', 'name', 'email', 'phone')
             ->orderBy('name')
             ->limit(200)
             ->get();
@@ -94,7 +100,7 @@ class VehicleController extends Controller
     public function create()
     {
         $owners = User::query()
-            ->select('id','name','email','phone')
+            ->select('id', 'name', 'email', 'phone')
             ->orderBy('name')
             ->get();
 
@@ -102,42 +108,31 @@ class VehicleController extends Controller
             ? TransitRoute::query()->orderBy('id')->get()
             : collect();
 
-        $vehicleTypes = Vehicle::query()
-            ->select('vehicle_type')
-            ->distinct()
-            ->orderBy('vehicle_type')
-            ->pluck('vehicle_type')
-            ->filter()
-            ->values()
-            ->all();
+        $vehicleTypes = $this->vehicleTypes();
 
-        if (empty($vehicleTypes)) {
-            $vehicleTypes = ['combi','taxi','bus'];
-        }
-
-        return view('admin.vehicles.create', compact('owners','routes','vehicleTypes'));
+        return view('admin.vehicles.create', compact('owners', 'routes', 'vehicleTypes'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'user_id'          => ['required','integer', Rule::exists('users','id')],
-            'vehicle_type'     => ['required','string','max:191'],
-            'transit_route_id' => ['nullable','integer', Rule::exists('transit_routes','id')],
-            'brand'            => ['required','string','max:191'],
-            'model'            => ['required','string','max:191'],
-            'color'            => ['required','string','max:191'],
-            'plate_number'     => ['required','string','max:191', Rule::unique('vehicles','plate_number')],
+            'user_id'          => ['nullable', 'integer', Rule::exists('users', 'id')],
+            'vehicle_type'     => ['required', 'string', 'max:191', Rule::in($this->vehicleTypes())],
+            'transit_route_id' => ['nullable', 'integer', Rule::exists('transit_routes', 'id')],
+            'brand'            => ['required', 'string', 'max:191'],
+            'model'            => ['required', 'string', 'max:191'],
+            'color'            => ['required', 'string', 'max:191'],
+            'plate_number'     => ['required', 'string', 'max:191', Rule::unique('vehicles', 'plate_number')],
         ]);
 
         $vehicle = new Vehicle();
-        $vehicle->user_id          = (int) $data['user_id'];
-        $vehicle->vehicle_type     = $data['vehicle_type'];
+        $vehicle->user_id = isset($data['user_id']) && $data['user_id'] !== '' ? (int) $data['user_id'] : null;
+        $vehicle->vehicle_type = $data['vehicle_type'];
         $vehicle->transit_route_id = $data['transit_route_id'] ?? null;
-        $vehicle->brand            = $data['brand'];
-        $vehicle->model            = $data['model'];
-        $vehicle->color            = $data['color'];
-        $vehicle->plate_number     = $data['plate_number'];
+        $vehicle->brand = $data['brand'];
+        $vehicle->model = $data['model'];
+        $vehicle->color = $data['color'];
+        $vehicle->plate_number = $data['plate_number'];
         $vehicle->save();
 
         return redirect()
@@ -152,7 +147,6 @@ class VehicleController extends Controller
             'transitRoute:id,short_name,long_name',
             'activeDriverAssignment',
             'activeDriverAssignment.driver:id,name,email,phone',
-
             'activeRouteAssignment',
             'activeRouteAssignment.route:id,short_name,long_name',
         ]);
@@ -162,10 +156,10 @@ class VehicleController extends Controller
 
     public function edit(Vehicle $vehicle)
     {
-        $vehicle->load(['user','transitRoute']);
+        $vehicle->load(['user', 'transitRoute']);
 
         $owners = User::query()
-            ->select('id','name','email','phone')
+            ->select('id', 'name', 'email', 'phone')
             ->orderBy('name')
             ->get();
 
@@ -173,41 +167,30 @@ class VehicleController extends Controller
             ? TransitRoute::query()->orderBy('id')->get()
             : collect();
 
-        $vehicleTypes = Vehicle::query()
-            ->select('vehicle_type')
-            ->distinct()
-            ->orderBy('vehicle_type')
-            ->pluck('vehicle_type')
-            ->filter()
-            ->values()
-            ->all();
+        $vehicleTypes = $this->vehicleTypes();
 
-        if (empty($vehicleTypes)) {
-            $vehicleTypes = ['combi','taxi','bus'];
-        }
-
-        return view('admin.vehicles.edit', compact('vehicle','owners','routes','vehicleTypes'));
+        return view('admin.vehicles.edit', compact('vehicle', 'owners', 'routes', 'vehicleTypes'));
     }
 
     public function update(Request $request, Vehicle $vehicle)
     {
         $data = $request->validate([
-            'user_id'          => ['required','integer', Rule::exists('users','id')],
-            'vehicle_type'     => ['required','string','max:191'],
-            'transit_route_id' => ['nullable','integer', Rule::exists('transit_routes','id')],
-            'brand'            => ['required','string','max:191'],
-            'model'            => ['required','string','max:191'],
-            'color'            => ['required','string','max:191'],
-            'plate_number'     => ['required','string','max:191', Rule::unique('vehicles','plate_number')->ignore($vehicle->id)],
+            'user_id'          => ['nullable', 'integer', Rule::exists('users', 'id')],
+            'vehicle_type'     => ['required', 'string', 'max:191', Rule::in($this->vehicleTypes())],
+            'transit_route_id' => ['nullable', 'integer', Rule::exists('transit_routes', 'id')],
+            'brand'            => ['required', 'string', 'max:191'],
+            'model'            => ['required', 'string', 'max:191'],
+            'color'            => ['required', 'string', 'max:191'],
+            'plate_number'     => ['required', 'string', 'max:191', Rule::unique('vehicles', 'plate_number')->ignore($vehicle->id)],
         ]);
 
-        $vehicle->user_id          = (int) $data['user_id'];
-        $vehicle->vehicle_type     = $data['vehicle_type'];
+        $vehicle->user_id = isset($data['user_id']) && $data['user_id'] !== '' ? (int) $data['user_id'] : null;
+        $vehicle->vehicle_type = $data['vehicle_type'];
         $vehicle->transit_route_id = $data['transit_route_id'] ?? null;
-        $vehicle->brand            = $data['brand'];
-        $vehicle->model            = $data['model'];
-        $vehicle->color            = $data['color'];
-        $vehicle->plate_number     = $data['plate_number'];
+        $vehicle->brand = $data['brand'];
+        $vehicle->model = $data['model'];
+        $vehicle->color = $data['color'];
+        $vehicle->plate_number = $data['plate_number'];
         $vehicle->save();
 
         return redirect()
@@ -242,49 +225,53 @@ class VehicleController extends Controller
             'activeDriverAssignment.driver:id,name,email,phone',
         ]);
 
-        $driversQuery = User::query()->select('id','name','email','phone')->orderBy('name');
+        $driversQuery = User::query()->select('id', 'name', 'email', 'phone')->orderBy('name');
 
         if (method_exists(User::class, 'role')) {
-            try { $driversQuery->role('driver'); } catch (\Throwable $e) {}
+            try {
+                $driversQuery->role('driver');
+            } catch (\Throwable $e) {
+            }
         }
 
         $drivers = $driversQuery->get();
 
-        return view('admin.vehicles.assign-driver', compact('vehicle','drivers'));
+        return view('admin.vehicles.assign-driver', compact('vehicle', 'drivers'));
     }
 
     public function assignDriverStore(Request $request, Vehicle $vehicle)
     {
         $data = $request->validate([
-            'driver_id' => ['required','integer', Rule::exists('users','id')],
-            'notes'     => ['nullable','string','max:500'],
+            'driver_id' => ['nullable', 'integer', Rule::exists('users', 'id')],
+            'notes'     => ['nullable', 'string', 'max:500'],
         ]);
 
         DB::transaction(function () use ($vehicle, $data) {
-
             DriverVehicleAssignment::query()
                 ->where('vehicle_id', $vehicle->id)
                 ->where('active', 1)
                 ->whereNull('ended_at')
                 ->update([
-                    'active'   => 0,
-                    'ended_at' => now(),
+                    'active'     => 0,
+                    'ended_at'   => now(),
                     'updated_at' => now(),
                 ]);
 
-            DriverVehicleAssignment::create([
-                'driver_id'   => (int) $data['driver_id'],
-                'vehicle_id'  => (int) $vehicle->id,
-                'started_at'  => now(),
-                'ended_at'    => null,
-                'active'      => 1,
-                'notes'       => $data['notes'] ?? null,
-            ]);
+            if (!empty($data['driver_id'])) {
+                DriverVehicleAssignment::create([
+                    'driver_id'   => (int) $data['driver_id'],
+                    'vehicle_id'  => (int) $vehicle->id,
+                    'started_at'  => now(),
+                    'ended_at'    => null,
+                    'active'      => 1,
+                    'notes'       => $data['notes'] ?? null,
+                ]);
+            }
         });
 
         return redirect()
             ->route('admin.vehicles.show', $vehicle)
-            ->with('status', 'Conductor asignado correctamente.');
+            ->with('status', !empty($data['driver_id']) ? 'Conductor asignado correctamente.' : 'Conductor removido correctamente.');
     }
 
     public function assignRouteForm(Vehicle $vehicle)
@@ -296,25 +283,24 @@ class VehicleController extends Controller
 
         $routes = TransitRoute::query()->orderBy('id')->get();
 
-        return view('admin.vehicles.assign-route', compact('vehicle','routes'));
+        return view('admin.vehicles.assign-route', compact('vehicle', 'routes'));
     }
 
     public function assignRouteStore(Request $request, Vehicle $vehicle)
     {
         $data = $request->validate([
-            'route_id' => ['required','integer', Rule::exists('transit_routes','id')],
-            'notes'    => ['nullable','string','max:500'],
+            'route_id' => ['required', 'integer', Rule::exists('transit_routes', 'id')],
+            'notes'    => ['nullable', 'string', 'max:500'],
         ]);
 
         DB::transaction(function () use ($vehicle, $data) {
-
             RouteVehicleAssignment::query()
                 ->where('vehicle_id', $vehicle->id)
                 ->where('active', 1)
                 ->whereNull('ended_at')
                 ->update([
-                    'active'   => 0,
-                    'ended_at' => now(),
+                    'active'     => 0,
+                    'ended_at'   => now(),
                     'updated_at' => now(),
                 ]);
 

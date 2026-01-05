@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- HEADER --}}
 <div class="d-flex align-items-center justify-content-between mb-4">
   <div>
     <h1 class="h4 mb-1 fw-black">Nuevo vehículo</h1>
@@ -17,17 +16,15 @@
   </a>
 </div>
 
-{{-- CARD FORM --}}
 <div class="card-soft">
   <div class="p-3 p-lg-4">
 
     <form method="POST" action="{{ route('admin.vehicles.store') }}" class="row g-3">
       @csrf
 
-      {{-- DUEÑO / USER --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
-          Dueño (usuario)
+          Dueño (usuario) (opcional)
         </label>
 
         <div class="input-group">
@@ -35,13 +32,17 @@
             <i class="fa-solid fa-user"></i>
           </span>
 
-          <select name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
-            <option value="">Selecciona un usuario</option>
+          @php
+            $selectedUserId = (string) old('user_id', '');
+          @endphp
+
+          <select name="user_id" class="form-select @error('user_id') is-invalid @enderror">
+            <option value="" {{ $selectedUserId === '' ? 'selected' : '' }}>Sin dueño</option>
+
             @foreach(($owners ?? []) as $o)
-              <option value="{{ $o->id }}" @selected((string)old('user_id') === (string)$o->id)>
-                #{{ $o->id }} — {{ $o->name }}
-                @if(!empty($o->phone)) · {{ $o->phone }} @endif
-                @if(!empty($o->email)) · {{ $o->email }} @endif
+              @php $oid = (string) $o->id; @endphp
+              <option value="{{ $o->id }}" {{ $selectedUserId === $oid ? 'selected' : '' }}>
+                {{ $o->name }}
               </option>
             @endforeach
           </select>
@@ -56,7 +57,6 @@
         </div>
       </div>
 
-      {{-- TIPO --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Tipo de vehículo
@@ -67,10 +67,19 @@
             <i class="fa-solid fa-car-side"></i>
           </span>
 
+          @php
+            $selectedType = (string) old('vehicle_type', '');
+            $types = ($vehicleTypes ?? []);
+            if (empty($types)) {
+              $types = ['combi','sedan','camioneta','pickup','camion','bus','taxi'];
+            }
+          @endphp
+
           <select name="vehicle_type" class="form-select @error('vehicle_type') is-invalid @enderror" required>
             <option value="">Selecciona un tipo</option>
-            @foreach(($vehicleTypes ?? ['combi','taxi','bus']) as $t)
-              <option value="{{ $t }}" @selected(old('vehicle_type') === $t)>{{ $t }}</option>
+            @foreach($types as $t)
+              @php $tt = (string) $t; @endphp
+              <option value="{{ $tt }}" {{ $selectedType === $tt ? 'selected' : '' }}>{{ $tt }}</option>
             @endforeach
           </select>
         </div>
@@ -80,7 +89,6 @@
         @enderror
       </div>
 
-      {{-- RUTA (OPCIONAL) --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Ruta (opcional)
@@ -91,10 +99,16 @@
             <i class="fa-solid fa-route"></i>
           </span>
 
+          @php
+            $selectedRouteId = (string) old('transit_route_id', '');
+          @endphp
+
           <select name="transit_route_id" class="form-select @error('transit_route_id') is-invalid @enderror">
-            <option value="">Sin ruta</option>
+            <option value="" {{ $selectedRouteId === '' ? 'selected' : '' }}>Sin ruta</option>
+
             @foreach(($routes ?? []) as $r)
-              <option value="{{ $r->id }}" @selected((string)old('transit_route_id') === (string)$r->id)>
+              @php $rid = (string) $r->id; @endphp
+              <option value="{{ $r->id }}" {{ $selectedRouteId === $rid ? 'selected' : '' }}>
                 Ruta #{{ $r->id }}
               </option>
             @endforeach
@@ -110,7 +124,6 @@
         </div>
       </div>
 
-      {{-- PLACAS --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Placas
@@ -137,7 +150,6 @@
         </div>
       </div>
 
-      {{-- MARCA --}}
       <div class="col-12 col-lg-4">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Marca
@@ -160,7 +172,6 @@
         @enderror
       </div>
 
-      {{-- MODELO --}}
       <div class="col-12 col-lg-4">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Modelo
@@ -183,7 +194,6 @@
         @enderror
       </div>
 
-      {{-- COLOR --}}
       <div class="col-12 col-lg-4">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Color
@@ -206,7 +216,6 @@
         @enderror
       </div>
 
-      {{-- ACTIONS --}}
       <div class="col-12 d-flex justify-content-end gap-2 mt-3">
         <a href="{{ route('admin.vehicles.index') }}" class="btn btn-outline-secondary px-4">
           Cancelar
@@ -227,7 +236,6 @@
 
 @push('scripts')
 <script>
-  // Placas en mayúsculas mientras escribe
   (function () {
     const el = document.querySelector('input[name="plate_number"]');
     if (!el) return;

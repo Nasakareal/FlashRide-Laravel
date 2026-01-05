@@ -3,24 +3,16 @@
   "WorkspaceRootPath": "C:\\wamp64\\www\\FlashRide\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\resources\\views\\admin\\vehicles\\edit.blade.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:resources\\views\\admin\\vehicles\\edit.blade.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\API\\RideController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\resources\\views\\admin\\vehicles\\create.blade.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:resources\\views\\admin\\vehicles\\create.blade.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Models\\User.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Models\\User.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Kernel.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Kernel.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\Admin\\VehicleController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:app\\Http\\Controllers\\Admin\\VehicleController.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,71 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "User.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Models\\User.php",
-              "RelativeDocumentMoniker": "app\\Models\\User.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Models\\User.php",
-              "RelativeToolTip": "app\\Models\\User.php",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAkwG4AAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "VehicleController.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\Admin\\VehicleController.php",
+              "RelativeDocumentMoniker": "app\\Http\\Controllers\\Admin\\VehicleController.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\Admin\\VehicleController.php",
+              "RelativeToolTip": "app\\Http\\Controllers\\Admin\\VehicleController.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-04T23:59:00.159Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "RideController.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php",
-              "RelativeDocumentMoniker": "app\\Http\\Controllers\\API\\RideController.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Controllers\\API\\RideController.php",
-              "RelativeToolTip": "app\\Http\\Controllers\\API\\RideController.php",
-              "ViewState": "AgIAAN0AAAAAAAAAAAAAAO0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-04T23:54:29.872Z",
+              "WhenOpened": "2026-01-05T02:00:44.377Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "api.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\routes\\api.php",
-              "RelativeDocumentMoniker": "routes\\api.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\routes\\api.php",
-              "RelativeToolTip": "routes\\api.php",
-              "ViewState": "AgIAABYAAAAAAAAAAAAkwDUAAAAHAAAAAAAAAA==",
+              "Title": "edit.blade.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\resources\\views\\admin\\vehicles\\edit.blade.php",
+              "RelativeDocumentMoniker": "resources\\views\\admin\\vehicles\\edit.blade.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\resources\\views\\admin\\vehicles\\edit.blade.php",
+              "RelativeToolTip": "resources\\views\\admin\\vehicles\\edit.blade.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAUwCQAAABqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-04T23:54:12.539Z",
+              "WhenOpened": "2026-01-05T01:54:21.403Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Kernel.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Kernel.php",
-              "RelativeDocumentMoniker": "app\\Http\\Kernel.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Kernel.php",
-              "RelativeToolTip": "app\\Http\\Kernel.php",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAkwDgAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "create.blade.php",
+              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\resources\\views\\admin\\vehicles\\create.blade.php",
+              "RelativeDocumentMoniker": "resources\\views\\admin\\vehicles\\create.blade.php",
+              "ToolTip": "C:\\wamp64\\www\\FlashRide\\resources\\views\\admin\\vehicles\\create.blade.php",
+              "RelativeToolTip": "resources\\views\\admin\\vehicles\\create.blade.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAABmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-04T23:53:58.556Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EnsureDriverHasActiveVehicle.php",
-              "DocumentMoniker": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php",
-              "RelativeDocumentMoniker": "app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php",
-              "ToolTip": "C:\\wamp64\\www\\FlashRide\\app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php",
-              "RelativeToolTip": "app\\Http\\Middleware\\EnsureDriverHasActiveVehicle.php",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAkwBAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-04T23:52:49.463Z",
+              "WhenOpened": "2026-01-05T01:49:23.329Z",
               "EditorCaption": ""
             }
           ]

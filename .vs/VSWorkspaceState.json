@@ -5,11 +5,10 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\Admin",
-    "\\app\\Http\\Middleware",
-    "\\app\\Models",
-    "\\app\\Providers",
-    "\\routes"
+    "\\resources",
+    "\\resources\\views",
+    "\\resources\\views\\admin",
+    "\\resources\\views\\admin\\vehicles"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\Admin\\DriverController.php",
   "PreviewInSolutionExplorer": false
 }
