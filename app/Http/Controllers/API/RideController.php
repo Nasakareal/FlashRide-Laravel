@@ -383,7 +383,18 @@ class RideController extends Controller
             ->whereNotNull('lat')
             ->whereNotNull('lng')
             ->where('updated_at', '>=', now()->subMinutes(5))
-            ->get(['id', 'name', 'lat', 'lng', 'heading', 'is_online', 'updated_at']);
+            ->get(['id', 'name', 'lat', 'lng', 'heading', 'is_online', 'updated_at'])
+            ->map(function ($u) {
+                return [
+                    'id'         => $u->id,
+                    'name'       => $u->name,
+                    'lat'        => (float)$u->lat,
+                    'lng'        => (float)$u->lng,
+                    'heading'    => is_null($u->heading) ? 0.0 : (float)$u->heading,
+                    'is_online'  => (bool)$u->is_online,
+                    'updated_at' => $u->updated_at,
+                ];
+            });
 
         return response()->json($conductores);
     }
@@ -394,6 +405,7 @@ class RideController extends Controller
             'lat'              => 'required|numeric',
             'lng'              => 'required|numeric',
             'bearing'          => 'nullable|integer',
+            'heading'          => 'nullable|numeric',
             'speed_kph'        => 'nullable|integer',
             'transit_route_id' => 'nullable|integer',
             'located_at'       => 'nullable|date',
@@ -410,7 +422,7 @@ class RideController extends Controller
             DB::table('users')->where('id', $user->id)->update([
                 'lat'        => $data['lat'],
                 'lng'        => $data['lng'],
-                'heading'    => $data['bearing'] ?? null,
+                'heading'    => $data['bearing'] ?? ($data['heading'] ?? null),
                 'is_online'  => 1,
                 'updated_at' => now(),
             ]);
