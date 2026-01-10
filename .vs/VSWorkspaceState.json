@@ -4,14 +4,14 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\Admin",
+    "\\app\\Http\\Controllers\\API",
     "\\app\\Models",
-    "\\resources",
-    "\\resources\\views",
-    "\\resources\\views\\admin",
-    "\\resources\\views\\admin\\vehicles",
+    "\\app\\Policies",
+    "\\app\\Providers",
+    "\\database",
+    "\\database\\migrations",
     "\\routes"
   ],
-  "SelectedNode": "\\resources\\views\\admin\\vehicles\\assign-driver.blade.php",
+  "SelectedNode": "\\app\\Http\\Controllers\\API\\RideController.php",
   "PreviewInSolutionExplorer": false
 }

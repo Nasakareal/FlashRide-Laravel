@@ -22,6 +22,7 @@ class User extends Authenticatable
         'role',
         'lat',
         'lng',
+        'heading',
         'is_online',
     ];
 
@@ -35,6 +36,7 @@ class User extends Authenticatable
         'is_online'         => 'boolean',
         'lat'               => 'float',
         'lng'               => 'float',
+        'heading'           => 'float',
     ];
 
     public function driverProfile()

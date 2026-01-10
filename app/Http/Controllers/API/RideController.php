@@ -306,6 +306,7 @@ class RideController extends Controller
             'ride_id'     => 'required|exists:rides,id',
             'driver_lat'  => 'required|numeric',
             'driver_lng'  => 'required|numeric',
+            'heading'     => 'nullable|numeric',
         ]);
 
         $ride = Ride::findOrFail($request->ride_id);
@@ -322,6 +323,8 @@ class RideController extends Controller
         DB::table('users')->where('id', $user->id)->update([
             'lat'        => $request->driver_lat,
             'lng'        => $request->driver_lng,
+            'heading'    => $request->heading,
+            'is_online'  => 1,
             'updated_at' => now(),
         ]);
 
@@ -379,7 +382,8 @@ class RideController extends Controller
             ->where('is_online', true)
             ->whereNotNull('lat')
             ->whereNotNull('lng')
-            ->get(['id', 'name', 'lat', 'lng', 'is_online']);
+            ->where('updated_at', '>=', now()->subMinutes(5))
+            ->get(['id', 'name', 'lat', 'lng', 'heading', 'is_online', 'updated_at']);
 
         return response()->json($conductores);
     }
@@ -406,6 +410,7 @@ class RideController extends Controller
             DB::table('users')->where('id', $user->id)->update([
                 'lat'        => $data['lat'],
                 'lng'        => $data['lng'],
+                'heading'    => $data['bearing'] ?? null,
                 'is_online'  => 1,
                 'updated_at' => now(),
             ]);
