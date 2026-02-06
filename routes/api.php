@@ -60,12 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides/estimate',       [RideController::class, 'estimateCost']);
 
     // UBICACIÓN
-    Route::post('/location/update', [RideController::class, 'updateLocation'])
-        ->middleware('driver.hasVehicle');
-
-    Route::post('/location/global', [RideController::class, 'updateGlobalLocation'])
-        ->middleware('driver.hasVehicle');
-
+    Route::post('/location/update', [RideController::class, 'updateLocation'])->middleware('driver.hasVehicle');
+    Route::post('/location/global', [RideController::class, 'updateGlobalLocation'])->middleware('driver.hasVehicle');
     Route::get('/drivers/nearby',   [RideController::class, 'nearbyDrivers']);
 
     // ONLINE / OFFLINE

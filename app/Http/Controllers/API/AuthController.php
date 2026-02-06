@@ -103,14 +103,18 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        if (! Hash::check($request->current_password, $user->password)) {
-            return response()->json(['message' => 'La contraseña actual no coincide'], 403);
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'La contraseña actual no coincide'
+            ], 403);
         }
 
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return response()->json(['message' => 'Contraseña actualizada con éxito']);
+        return response()->json([
+            'message' => 'Contraseña actualizada con éxito'
+        ]);
     }
 
     public function registerDriver(Request $request)

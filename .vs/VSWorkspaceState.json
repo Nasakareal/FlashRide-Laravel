@@ -5,11 +5,6 @@
     "\\app\\Http",
     "\\app\\Http\\Controllers",
     "\\app\\Http\\Controllers\\API",
-    "\\app\\Models",
-    "\\app\\Policies",
-    "\\app\\Providers",
-    "\\database",
-    "\\database\\migrations",
     "\\routes"
   ],
   "PreviewInSolutionExplorer": false
