@@ -37,14 +37,20 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
-        if (!$user || (string)($user->role ?? '') !== 'admin') {
+        if (
+            !$user ||
+            (
+                !$user->hasRole('superadmin') &&
+                !$user->can('panel.access')
+            )
+        ) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return redirect()
                 ->route('login')
-                ->withErrors(['email' => 'Solo administradores pueden iniciar sesión.']);
+                ->withErrors(['email' => 'No tienes acceso al panel.']);
         }
 
         return redirect()->intended(route('dashboard'));

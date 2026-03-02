@@ -57,11 +57,13 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
     // Dashboard general (para cualquier usuario autenticado)
     Route::get('dashboard', [DashboardController::class, 'publicDashboard'])->name('dashboard');
 
-    // ============================
-    //   ADMIN PANEL (role:admin)
-    // ============================
-    Route::middleware('role:admin')
-        ->prefix('admin')->name('admin.')
+    // =========================================================
+    // BACKOFFICE / PANEL (roles internos reales del sistema)
+    // Entren: admin, superadmin, soporte, capturista, analista
+    // NO entren: driver, passenger
+    // =========================================================
+    Route::prefix('admin')->name('admin.')
+        ->middleware('role:admin|superadmin|soporte|capturista|analista')
         ->group(function () {
 
             // Dashboard del área Admin
@@ -142,20 +144,14 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             Route::post('routes/{route}/deactivate', [TransitRouteController::class,'deactivate'])->name('routes.deactivate');
             Route::post('routes/bulk',               [TransitRouteController::class,'bulk'])->name('routes.bulk');
             Route::get('routes/export/csv',          [TransitRouteController::class,'exportCsv'])->name('routes.export.csv');
-        });
 
-    // ============================
-    // TICKETS (admin + support + super*)
-    // ============================
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::middleware('role:admin|support|super_admin|superadmin')->group(function () {
+            // ========= TICKETS =========
+            // (ya están dentro del mismo panel, sin duplicar prefijos ni middleware con roles inexistentes)
             Route::get('tickets', [AdminTicketController::class, 'index'])->name('tickets.index');
             Route::get('tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show')->whereNumber('ticket');
-
             Route::post('tickets/{ticket}/claim', [AdminTicketController::class, 'claim'])->name('tickets.claim')->whereNumber('ticket');
             Route::post('tickets/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('tickets.reply')->whereNumber('ticket');
             Route::post('tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close')->whereNumber('ticket');
         });
-    });
 
 });

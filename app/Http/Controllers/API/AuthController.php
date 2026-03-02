@@ -10,9 +10,6 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Registro de nuevo usuario (solo pasajero).
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -46,9 +43,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Login por email o teléfono.
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -83,9 +77,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Obtener perfil del usuario autenticado.
-     */
     public function profile(Request $request)
     {
         return response()->json($request->user());

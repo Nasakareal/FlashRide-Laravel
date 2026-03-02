@@ -4,8 +4,8 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\API",
-    "\\routes"
+    "\\app\\Http\\Controllers\\Auth"
   ],
+  "SelectedNode": "\\resources",
   "PreviewInSolutionExplorer": false
 }
