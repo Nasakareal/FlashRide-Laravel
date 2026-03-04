@@ -147,6 +147,67 @@
         <hr class="mt-2 mb-0">
       </div>
 
+      {{-- NUEVOS CAMPOS --}}
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Nombre completo conforme INE</label>
+        <input
+          name="full_name_ine"
+          value="{{ old('full_name_ine') }}"
+          class="form-control @error('full_name_ine') is-invalid @enderror"
+          placeholder="Tal cual aparece en el INE">
+        @error('full_name_ine')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Lugar de nacimiento</label>
+        <input
+          name="birth_place"
+          value="{{ old('birth_place') }}"
+          class="form-control @error('birth_place') is-invalid @enderror"
+          placeholder="Ciudad / Estado">
+        @error('birth_place')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Nombre completo de la madre</label>
+        <input
+          name="mother_full_name"
+          value="{{ old('mother_full_name') }}"
+          class="form-control @error('mother_full_name') is-invalid @enderror"
+          placeholder="Nombre completo">
+        @error('mother_full_name')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Nombre completo del padre</label>
+        <input
+          name="father_full_name"
+          value="{{ old('father_full_name') }}"
+          class="form-control @error('father_full_name') is-invalid @enderror"
+          placeholder="Nombre completo">
+        @error('father_full_name')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12">
+        <label class="form-label small mb-1 text-muted">Referencia (INE reverso u otra)</label>
+        <input
+          name="reference"
+          value="{{ old('reference') }}"
+          class="form-control @error('reference') is-invalid @enderror"
+          placeholder="Ej. INE reverso / contacto / observación corta">
+        @error('reference')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
       {{-- LICENCIA --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1 text-muted">Número de licencia</label>

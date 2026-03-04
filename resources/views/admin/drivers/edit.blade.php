@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- HEADER --}}
 <div class="d-flex align-items-center justify-content-between mb-4">
   <div>
     <h1 class="h4 mb-1 fw-black">Editar conductor</h1>
@@ -24,10 +23,9 @@
 </div>
 
 @php
-  $p = $driver->driverProfile; // puede ser null
+  $p = $driver->driverProfile;
 @endphp
 
-{{-- CARD --}}
 <div class="card-soft">
   <div class="p-3 p-lg-4">
 
@@ -35,17 +33,12 @@
       @csrf
       @method('PUT')
 
-      {{-- =========================
-          CUENTA (users)
-      ========================= --}}
-
       <div class="col-12">
         <div class="fw-bold mb-1">Cuenta</div>
         <div class="small text-muted">Datos para iniciar sesión</div>
         <hr class="mt-2 mb-0">
       </div>
 
-      {{-- NOMBRE --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Nombre completo
@@ -63,7 +56,6 @@
         @enderror
       </div>
 
-      {{-- EMAIL --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Correo electrónico
@@ -82,7 +74,6 @@
         @enderror
       </div>
 
-      {{-- PHONE --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Teléfono
@@ -100,7 +91,6 @@
         @enderror
       </div>
 
-      {{-- PASSWORD (opcional) --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1" style="color:var(--muted);">
           Nueva contraseña (opcional)
@@ -116,7 +106,6 @@
             autocomplete="new-password">
         </div>
 
-        {{-- Reglas en vivo --}}
         <div class="form-text mt-2">
           Si la cambias, debe contener:
           <ul class="mb-0 ps-0" id="pwRules" style="list-style:none;">
@@ -144,17 +133,72 @@
         @enderror
       </div>
 
-      {{-- =========================
-          EXPEDIENTE (drivers)
-      ========================= --}}
-
       <div class="col-12 mt-2">
         <div class="fw-bold mb-1">Expediente</div>
         <div class="small text-muted">Datos adicionales del conductor</div>
         <hr class="mt-2 mb-0">
       </div>
 
-      {{-- LICENCIA --}}
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Nombre completo conforme INE</label>
+        <input
+          name="full_name_ine"
+          value="{{ old('full_name_ine', $p->full_name_ine ?? '') }}"
+          class="form-control @error('full_name_ine') is-invalid @enderror"
+          placeholder="Tal cual aparece en el INE">
+        @error('full_name_ine')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Lugar de nacimiento</label>
+        <input
+          name="birth_place"
+          value="{{ old('birth_place', $p->birth_place ?? '') }}"
+          class="form-control @error('birth_place') is-invalid @enderror"
+          placeholder="Ciudad / Estado">
+        @error('birth_place')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Nombre completo de la madre</label>
+        <input
+          name="mother_full_name"
+          value="{{ old('mother_full_name', $p->mother_full_name ?? '') }}"
+          class="form-control @error('mother_full_name') is-invalid @enderror"
+          placeholder="Nombre completo">
+        @error('mother_full_name')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label small mb-1 text-muted">Nombre completo del padre</label>
+        <input
+          name="father_full_name"
+          value="{{ old('father_full_name', $p->father_full_name ?? '') }}"
+          class="form-control @error('father_full_name') is-invalid @enderror"
+          placeholder="Nombre completo">
+        @error('father_full_name')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
+      <div class="col-12">
+        <label class="form-label small mb-1 text-muted">Referencia (INE reverso u otra)</label>
+        <input
+          name="reference"
+          value="{{ old('reference', $p->reference ?? '') }}"
+          class="form-control @error('reference') is-invalid @enderror"
+          placeholder="Ej. INE reverso / contacto / observación corta">
+        @error('reference')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+      </div>
+
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1 text-muted">Número de licencia</label>
         <input
@@ -172,14 +216,13 @@
         <input
           type="date"
           name="license_expires_at"
-          value="{{ old('license_expires_at', optional($p?->license_expires_at)->format('Y-m-d')) }}"
+          value="{{ old('license_expires_at', $p?->license_expires_at?->format('Y-m-d')) }}"
           class="form-control @error('license_expires_at') is-invalid @enderror">
         @error('license_expires_at')
           <div class="invalid-feedback">{{ $message }}</div>
         @enderror
       </div>
 
-      {{-- CURP / RFC --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1 text-muted">CURP</label>
         <input
@@ -204,26 +247,24 @@
         @enderror
       </div>
 
-      {{-- NACIMIENTO --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1 text-muted">Fecha de nacimiento</label>
         <input
           type="date"
           name="birthdate"
-          value="{{ old('birthdate', optional($p?->birthdate)->format('Y-m-d')) }}"
+          value="{{ old('birthdate', $p?->birthdate?->format('Y-m-d')) }}"
           class="form-control @error('birthdate') is-invalid @enderror">
         @error('birthdate')
           <div class="invalid-feedback">{{ $message }}</div>
         @enderror
       </div>
 
-      {{-- VERIFICADO --}}
       <div class="col-12 col-lg-6">
         <label class="form-label small mb-1 text-muted">Verificación</label>
         @php
           $oldVerified = old('is_verified');
-          $currentVerified = isset($oldVerified)
-            ? $oldVerified
+          $currentVerified = $oldVerified !== null
+            ? (string)$oldVerified
             : (isset($p) ? (string)($p->is_verified ? 1 : 0) : '');
         @endphp
 
@@ -244,7 +285,6 @@
         @endif
       </div>
 
-      {{-- DIRECCIÓN --}}
       <div class="col-12">
         <label class="form-label small mb-1 text-muted">Dirección</label>
         <textarea
@@ -257,7 +297,6 @@
         @enderror
       </div>
 
-      {{-- NOTAS --}}
       <div class="col-12">
         <label class="form-label small mb-1 text-muted">Notas internas</label>
         <textarea
@@ -270,7 +309,6 @@
         @enderror
       </div>
 
-      {{-- ACTIONS --}}
       <div class="col-12 d-flex justify-content-end gap-2 mt-3">
         <a href="{{ route('admin.drivers.show', $driver) }}" class="btn btn-outline-secondary px-4">
           Cancelar

@@ -4,8 +4,14 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\Auth"
+    "\\app\\Http\\Controllers\\Admin",
+    "\\resources",
+    "\\resources\\views",
+    "\\resources\\views\\admin",
+    "\\resources\\views\\admin\\drivers",
+    "\\resources\\views\\admin\\drivers\\partials",
+    "\\routes"
   ],
-  "SelectedNode": "\\resources",
+  "SelectedNode": "\\resources\\views\\admin\\drivers\\partials\\documents.blade.php",
   "PreviewInSolutionExplorer": false
 }

@@ -21,6 +21,12 @@ class Driver extends Model
         'notes',
         'rating_avg',
         'rating_count',
+
+        'full_name_ine',
+        'birth_place',
+        'mother_full_name',
+        'father_full_name',
+        'reference',
     ];
 
     protected $casts = [
@@ -48,5 +54,15 @@ class Driver extends Model
             ->where('active', 1)
             ->whereNull('ended_at')
             ->latest('started_at');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(\App\Models\DriverDocument::class, 'driver_id');
+    }
+
+    public function activeDocuments()
+    {
+        return $this->documents()->where('is_active', 1);
     }
 }

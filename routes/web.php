@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DriverController;
 use App\Http\Controllers\Admin\DriverMediaController;
+use App\Http\Controllers\Admin\DriverDocumentController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\AssignmentController;
 use App\Http\Controllers\Admin\TripController;
@@ -87,6 +88,9 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
             // Archivos del conductor
             Route::post('drivers/{driver}/media',           [DriverMediaController::class,'store'])->name('drivers.media.store');
             Route::delete('drivers/{driver}/media/{media}', [DriverMediaController::class,'destroy'])->name('drivers.media.destroy');
+            Route::post('drivers/{driver}/documents', [DriverDocumentController::class,'store'])->name('drivers.documents.store');
+            Route::delete('drivers/{driver}/documents/{document}', [DriverDocumentController::class,'destroy'])->name('drivers.documents.destroy');
+            Route::get('drivers/{driver}/documents/{document}/download', [DriverDocumentController::class,'download'])->name('drivers.documents.download');
 
             // ========= VEHÍCULOS =========
             Route::resource('vehicles', VehicleController::class);
