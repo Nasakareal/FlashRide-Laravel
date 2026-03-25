@@ -2,9 +2,14 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\Console",
-    "\\app\\Console\\Commands"
+    "\\app\\Http",
+    "\\app\\Http\\Controllers",
+    "\\app\\Http\\Controllers\\Admin",
+    "\\resources",
+    "\\resources\\views",
+    "\\resources\\views\\admin",
+    "\\resources\\views\\admin\\users"
   ],
-  "SelectedNode": "\\app\\Console\\Commands\\CleanInactiveDrivers.php",
+  "SelectedNode": "\\resources\\views\\admin\\users\\create.blade.php",
   "PreviewInSolutionExplorer": false
 }
