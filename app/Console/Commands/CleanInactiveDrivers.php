@@ -11,11 +11,6 @@ class CleanInactiveDrivers extends Command
 
     protected $description = 'Marca como inactivos a conductores y limpia su ubicación si llevan 5 minutos sin actualizarse.';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle()
     {
         $inactivos = User::where('role', 'driver')
@@ -30,6 +25,8 @@ class CleanInactiveDrivers extends Command
             $user->save();
         }
 
-        $this->info("Se marcaron " . count($inactivos) . " conductores como inactivos y se limpió su ubicación.");
+        $this->info('Se marcaron ' . $inactivos->count() . ' conductores como inactivos y se limpió su ubicación.');
+
+        return 0;
     }
 }

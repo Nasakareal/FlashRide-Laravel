@@ -1,10 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\resources",
-    "\\resources\\views",
-    "\\routes"
+    "\\app",
+    "\\app\\Console",
+    "\\app\\Console\\Commands"
   ],
-  "SelectedNode": "\\resources\\views\\privacy_policy.blade.php",
+  "SelectedNode": "\\app\\Console\\Commands\\CleanInactiveDrivers.php",
   "PreviewInSolutionExplorer": false
 }
