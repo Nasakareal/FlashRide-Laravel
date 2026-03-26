@@ -1,6 +1,20 @@
 @extends('layouts.app')
 @section('title','Detalle de ruta')
 
+@push('styles')
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+/>
+<style>
+    #routeMap .leaflet-container {
+        background: #f8fafc;
+    }
+</style>
+@endpush
+
 @section('content')
 
 @php
@@ -13,7 +27,6 @@
   $badgeState = $route->is_active ? 'bg-success' : 'bg-secondary';
 @endphp
 
-{{-- HEADER --}}
 <div class="d-flex align-items-center justify-content-between mb-4">
   <div>
     <h1 class="h4 mb-1 fw-black">Ruta #{{ $route->id }}</h1>
@@ -49,14 +62,10 @@
   </div>
 </div>
 
-{{-- TOP CARDS --}}
 <div class="row g-3 mb-4">
-
-  {{-- INFO --}}
   <div class="col-12 col-lg-8">
     <div class="card-soft h-100">
       <div class="p-3 p-lg-4">
-
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
           <div>
             <div class="small" style="color:var(--muted);">Identidad</div>
@@ -74,9 +83,7 @@
           </div>
         </div>
 
-        {{-- PREVIEW --}}
-        <div class="p-3 rounded-3 border"
-             style="background:#{{ $routeColor }}; color:#{{ $textColor }};">
+        <div class="p-3 rounded-3 border" style="background:#{{ $routeColor }}; color:#{{ $textColor }};">
           <div class="fw-bold">Preview</div>
           <div class="small">{{ $route->short_name }} — {{ $route->long_name }}</div>
           <div class="small opacity-75">#{{ $routeColor }} · #{{ $textColor }}</div>
@@ -123,7 +130,6 @@
     </div>
   </div>
 
-  {{-- STATS --}}
   <div class="col-12 col-lg-4">
     <div class="card-soft h-100">
       <div class="p-3 p-lg-4">
@@ -150,7 +156,6 @@
   </div>
 </div>
 
-{{-- TABLE: DIRECT VEHICLES --}}
 <div class="card-soft overflow-hidden mb-4">
   <div class="p-3 p-lg-4 border-bottom d-flex align-items-center justify-content-between">
     <div>
@@ -174,14 +179,11 @@
         @forelse($directVehicles as $v)
           <tr>
             <td class="ps-4 fw-semibold">{{ $v->id }}</td>
-
             <td class="text-uppercase fw-bold">{{ $v->plate_number }}</td>
-
             <td>
               <div class="fw-semibold">{{ $v->brand }} {{ $v->model }}</div>
               <div class="small text-muted">{{ $v->vehicle_type }} · {{ $v->color }}</div>
             </td>
-
             <td>
               @if($v->user)
                 <div class="fw-semibold">{{ $v->user->name }}</div>
@@ -193,7 +195,6 @@
                 <span class="text-muted small">Sin dueño</span>
               @endif
             </td>
-
             <td class="text-end pe-4">
               <a href="{{ route('admin.vehicles.show', $v) }}" class="btn btn-outline-info btn-sm">
                 <i class="fa-regular fa-eye"></i>
@@ -210,7 +211,6 @@
   </div>
 </div>
 
-{{-- TABLE: ASSIGNED VEHICLES (PIVOT) --}}
 <div class="card-soft overflow-hidden">
   <div class="p-3 p-lg-4 border-bottom d-flex align-items-center justify-content-between">
     <div>
@@ -238,7 +238,6 @@
           @php $v = $a->vehicle; @endphp
           <tr>
             <td class="ps-4 fw-semibold">#{{ $a->id }}</td>
-
             <td>
               @if($v)
                 <div class="fw-semibold">{{ $v->brand }} {{ $v->model }}</div>
@@ -247,19 +246,15 @@
                 <span class="text-muted small">Vehículo no disponible</span>
               @endif
             </td>
-
             <td class="text-uppercase fw-bold">
               {{ $v->plate_number ?? '—' }}
             </td>
-
             <td class="text-muted">
               {{ optional($a->started_at)->format('Y-m-d H:i') ?? '—' }}
             </td>
-
             <td class="text-muted">
               {{ $a->notes ?? '—' }}
             </td>
-
             <td class="text-end pe-4">
               @if($v)
                 <a href="{{ route('admin.vehicles.show', $v) }}" class="btn btn-outline-info btn-sm">
@@ -280,8 +275,7 @@
   </div>
 </div>
 
-{{-- MAPA --}}
-<div class="card-soft overflow-hidden mb-4">
+<div class="card-soft overflow-hidden mb-4 mt-4">
   <div class="p-3 p-lg-4 border-bottom d-flex align-items-center justify-content-between">
     <div>
       <div class="fw-bold">Mapa de la ruta</div>
@@ -302,109 +296,99 @@
   </div>
 </div>
 
-
 @endsection
 
 @push('scripts')
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+></script>
 <script>
-  (function () {
+(function () {
     const encoded = @json((string)($route->polyline ?? ''));
+    const fallbackCenter = [19.705, -101.194];
+    const strokeColor = '#{{ strtoupper(ltrim((string)($route->color ?? '0080FF'), '#')) }}';
 
-    // Si no hay polyline, mostramos un mapa centrado en Morelia
-    const fallbackCenter = { lat: 19.705, lng: -101.194 };
-
-    // Decoder simple para encoded polyline (Google)
     function decodePolyline(str) {
-      let index = 0, lat = 0, lng = 0, coords = [];
-      const len = str.length;
+        let index = 0;
+        let lat = 0;
+        let lng = 0;
+        const coords = [];
+        const len = str.length;
 
-      while (index < len) {
-        let b, shift = 0, result = 0;
-        do {
-          b = str.charCodeAt(index++) - 63;
-          result |= (b & 0x1f) << shift;
-          shift += 5;
-        } while (b >= 0x20);
-        const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-        lat += dlat;
+        while (index < len) {
+            let b;
+            let shift = 0;
+            let result = 0;
 
-        shift = 0; result = 0;
-        do {
-          b = str.charCodeAt(index++) - 63;
-          result |= (b & 0x1f) << shift;
-          shift += 5;
-        } while (b >= 0x20);
-        const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-        lng += dlng;
+            do {
+                b = str.charCodeAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
 
-        coords.push({ lat: lat / 1e5, lng: lng / 1e5 });
-      }
-      return coords;
+            const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+
+            do {
+                b = str.charCodeAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+
+            const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+            lng += dlng;
+
+            coords.push([lat / 1e5, lng / 1e5]);
+        }
+
+        return coords;
     }
 
-    window.__initRouteMap = function () {
-      const el = document.getElementById('routeMap');
-      if (!el || typeof google === 'undefined' || !google.maps) return;
+    const el = document.getElementById('routeMap');
+    if (!el || typeof L === 'undefined') return;
 
-      const map = new google.maps.Map(el, {
-        center: fallbackCenter,
-        zoom: 12,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true,
-      });
+    const map = L.map('routeMap', {
+        zoomControl: true,
+        attributionControl: true
+    }).setView(fallbackCenter, 12);
 
-      if (!encoded || encoded.length < 5) return;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-      let path = [];
-      try {
+    if (!encoded || encoded.length < 5) {
+        return;
+    }
+
+    let path = [];
+
+    try {
         path = decodePolyline(encoded);
-      } catch (e) {
+    } catch (e) {
         console.warn('Polyline inválida', e);
         return;
-      }
-      if (!path.length) return;
-
-      const routeLine = new google.maps.Polyline({
-        path,
-        geodesic: true,
-        strokeOpacity: 1,
-        strokeWeight: 5,
-        // Nota: no fijo color aquí; usamos el de tu BD si existe
-        strokeColor: '#{{ strtoupper(ltrim((string)($route->color ?? '0080FF'), '#')) }}',
-      });
-
-      routeLine.setMap(map);
-
-      // Fit bounds para que se vea completa
-      const bounds = new google.maps.LatLngBounds();
-      path.forEach(p => bounds.extend(p));
-      map.fitBounds(bounds);
-
-      // Marcadores de inicio/fin (opcional)
-      new google.maps.Marker({ position: path[0], map, title: 'Inicio' });
-      new google.maps.Marker({ position: path[path.length - 1], map, title: 'Fin' });
-    };
-
-    // Cargar Google Maps JS dinámicamente (una sola vez)
-    function loadGoogleMaps() {
-      if (typeof google !== 'undefined' && google.maps) {
-        window.__initRouteMap();
-        return;
-      }
-
-      const existing = document.querySelector('script[data-gmaps="1"]');
-      if (existing) return;
-
-      const s = document.createElement('script');
-      s.src = "https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_key') }}&callback=__initRouteMap";
-      s.async = true;
-      s.defer = true;
-      s.setAttribute('data-gmaps','1');
-      document.head.appendChild(s);
     }
 
-    loadGoogleMaps();
-  })();
+    if (!path.length) {
+        return;
+    }
+
+    const routeLine = L.polyline(path, {
+        color: strokeColor,
+        weight: 5,
+        opacity: 1
+    }).addTo(map);
+
+    map.fitBounds(routeLine.getBounds(), { padding: [20, 20] });
+
+    L.marker(path[0]).addTo(map).bindPopup('Inicio');
+    L.marker(path[path.length - 1]).addTo(map).bindPopup('Fin');
+})();
 </script>
 @endpush

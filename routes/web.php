@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Auth
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ProfileController;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\DashboardController;
@@ -57,6 +58,9 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
 
     // Dashboard general (para cualquier usuario autenticado)
     Route::get('dashboard', [DashboardController::class, 'publicDashboard'])->name('dashboard');
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
     // =========================================================
     // BACKOFFICE / PANEL (roles internos reales del sistema)
@@ -158,4 +162,3 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
 
 });
 Route::view('/privacy-policy', 'privacy_policy')->name('privacy.policy');
-
