@@ -12,53 +12,66 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $request->merge([
+            'name' => $request->filled('name') ? trim($request->name) : null,
+            'email' => $request->filled('email') ? strtolower(trim($request->email)) : null,
+            'phone' => $request->filled('phone') ? trim($request->phone) : null,
+        ]);
+
         $validator = Validator::make($request->all(), [
-            'name'                  => 'required|string|max:255',
-            'email'                 => 'required|email|unique:users,email',
-            'phone'                 => 'required|string|max:20|unique:users,phone',
-            'password'              => 'required|string|min:6|confirmed',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|max:20|unique:users,phone',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validación fallida',
-                'errors'  => $validator->errors(),
-                'input'   => $request->all(),
+                'errors' => $validator->errors(),
+                'input' => $request->all(),
             ], 422);
         }
 
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'phone'    => $request->phone,
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'role'     => 'passenger',
+            'role' => 'passenger',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user'  => $user,
+            'user' => $user,
             'token' => $token,
         ], 201);
     }
 
     public function login(Request $request)
     {
+        $request->merge([
+            'email' => $request->filled('email') ? strtolower(trim($request->email)) : null,
+            'phone' => $request->filled('phone') ? trim($request->phone) : null,
+            'password' => $request->filled('password') ? trim($request->password) : null,
+        ]);
+
         $request->validate([
-            'email'     => 'nullable|email',
-            'phone'     => 'nullable|string',
-            'password'  => 'required|string',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
+            'password' => 'required|string',
         ]);
 
         $user = null;
+
         if ($request->filled('email')) {
-            $user = User::where('email', $request->email)->first();
+            $user = User::whereRaw('LOWER(email) = ?', [$request->email])->first();
         } elseif ($request->filled('phone')) {
             $user = User::where('phone', $request->phone)->first();
         }
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
 
@@ -72,7 +85,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user'  => $user,
+            'user' => $user,
             'token' => $token,
         ]);
     }
@@ -82,14 +95,11 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
-    /**
-     * Cambiar contraseña del usuario autenticado.
-     */
     public function changePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required|string',
-            'new_password'     => 'required|string|min:6|confirmed',
+            'new_password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = $request->user();
@@ -113,6 +123,12 @@ class AuthController extends Controller
         if (auth()->user()->role !== 'admin') {
             return response()->json(['message' => 'No autorizado'], 403);
         }
+
+        $request->merge([
+            'name' => $request->filled('name') ? trim($request->name) : null,
+            'email' => $request->filled('email') ? strtolower(trim($request->email)) : null,
+            'phone' => $request->filled('phone') ? trim($request->phone) : null,
+        ]);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -149,8 +165,13 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        $request->merge([
+            'name' => $request->filled('name') ? trim($request->name) : null,
+            'phone' => $request->filled('phone') ? trim($request->phone) : null,
+        ]);
+
         $data = $request->validate([
-            'name'  => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
         ]);
 
@@ -158,7 +179,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Perfil actualizado.',
-            'user'    => $user->fresh(),
+            'user' => $user->fresh(),
         ]);
     }
 
@@ -166,12 +187,16 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        $request->merge([
+            'email' => $request->filled('email') ? strtolower(trim($request->email)) : null,
+        ]);
+
         $data = $request->validate([
-            'email'            => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
             'current_password' => 'required|string',
         ]);
 
-        if (! \Illuminate\Support\Facades\Hash::check($data['current_password'], $user->password)) {
+        if (!Hash::check($data['current_password'], $user->password)) {
             return response()->json(['message' => 'La contraseña actual no coincide'], 403);
         }
 
@@ -180,9 +205,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Correo actualizado.',
-            'user'    => $user->fresh(),
+            'user' => $user->fresh(),
         ]);
     }
-
-
 }
