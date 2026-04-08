@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\TransitRouteController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
+use App\Http\Controllers\Admin\TarjetaTelefericoController;
 
 // ------------------------------
 // Debug (útil mientras configuras)
@@ -152,12 +153,22 @@ Route::prefix('flashride')->middleware('auth')->group(function () {
         Route::get('routes/export/csv',          [TransitRouteController::class,'exportCsv'])->name('routes.export.csv');
 
         // ========= TICKETS =========
-        // (ya están dentro del mismo panel, sin duplicar prefijos ni middleware con roles inexistentes)
         Route::get('tickets', [AdminTicketController::class, 'index'])->name('tickets.index');
         Route::get('tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show')->whereNumber('ticket');
         Route::post('tickets/{ticket}/claim', [AdminTicketController::class, 'claim'])->name('tickets.claim')->whereNumber('ticket');
         Route::post('tickets/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('tickets.reply')->whereNumber('ticket');
         Route::post('tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close')->whereNumber('ticket');
+
+        // ========= TARJETAS TELEFÉRICO =========
+        Route::resource('tarjetas-teleferico', TarjetaTelefericoController::class)->parameters([
+            'tarjetas-teleferico' => 'tarjetaTeleferico',
+        ]);
+        Route::post('tarjetas-teleferico/{tarjetaTeleferico}/activar', [TarjetaTelefericoController::class, 'activar'])->middleware('can:cambiar estatus tarjetas teleferico')->name('tarjetas-teleferico.activar');
+        Route::post('tarjetas-teleferico/{tarjetaTeleferico}/inactivar', [TarjetaTelefericoController::class, 'inactivar'])->middleware('can:cambiar estatus tarjetas teleferico')->name('tarjetas-teleferico.inactivar');
+        Route::post('tarjetas-teleferico/{tarjetaTeleferico}/cancelar', [TarjetaTelefericoController::class, 'cancelar'])->middleware('can:cambiar estatus tarjetas teleferico')->name('tarjetas-teleferico.cancelar');
+        Route::post('tarjetas-teleferico/{tarjetaTeleferico}/reposicion', [TarjetaTelefericoController::class, 'reposicion'])->middleware('can:cambiar estatus tarjetas teleferico')->name('tarjetas-teleferico.reposicion');
+        Route::post('tarjetas-teleferico/bulk', [TarjetaTelefericoController::class, 'bulk'])->middleware('can:editar tarjetas teleferico')->name('tarjetas-teleferico.bulk');
+        Route::get('tarjetas-teleferico/export/csv', [TarjetaTelefericoController::class, 'exportCsv'])->middleware('can:exportar tarjetas teleferico')->name('tarjetas-teleferico.export.csv');
     });
 
 });

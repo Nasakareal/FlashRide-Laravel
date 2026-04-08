@@ -4,7 +4,11 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\API"
+    "\\app\\Http\\Controllers\\Admin",
+    "\\resources",
+    "\\resources\\views",
+    "\\routes"
   ],
+  "SelectedNode": "\\app\\Http\\Controllers\\Admin\\DashboardController.php",
   "PreviewInSolutionExplorer": false
 }

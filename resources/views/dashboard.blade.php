@@ -7,7 +7,6 @@
     return \Illuminate\Support\Facades\Route::has($name) ? route($name, $params) : $fallback;
   };
 
-  // Roles (Spatie o columna role)
   $user = auth()->user();
 
   $isSupport = false;
@@ -114,7 +113,33 @@
         </div>
       </div>
 
-      {{-- 4ta tarjeta: Admin ve Usuarios / Support ve Tickets --}}
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="card-soft p-4">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="icon-pill mb-3"><i class="fa-solid fa-credit-card"></i></div>
+              <div class="fw-black" style="font-weight:900;">Tarjetas Teleférico</div>
+              <div class="small" style="color:var(--muted);">Control de tarjetas entregadas.</div>
+            </div>
+            <div class="text-end">
+              <div class="small" style="color:var(--muted);">Total</div>
+              <div class="h4 mb-0 fw-black" style="font-weight:900;">
+                {{ isset($tarjetasTelefericoCount) ? number_format($tarjetasTelefericoCount) : '—' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.tarjetas-teleferico.index') }}">
+              <i class="fa-solid fa-list me-2"></i> Ver
+            </a>
+            <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.tarjetas-teleferico.create') }}">
+              <i class="fa-solid fa-plus me-2"></i> Nuevo
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="col-12 col-md-6 col-lg-3">
         <div class="card-soft p-4">
           <div class="d-flex align-items-start justify-content-between">
@@ -153,8 +178,7 @@
               <a class="btn btn-brand btn-sm px-3 py-2" href="{{ $to('admin.tickets.index') }}">
                 <i class="fa-solid fa-inbox me-2"></i> Ver
               </a>
-              <a class="btn btn-outline-secondary btn-sm px-3 py-2"
-                 href="{{ $to('admin.tickets.index', '#', ['unassigned' => 1]) }}">
+              <a class="btn btn-outline-secondary btn-sm px-3 py-2" href="{{ $to('admin.tickets.index', '#', ['unassigned' => 1]) }}">
                 <i class="fa-solid fa-bolt me-2"></i> Sin asignar
               </a>
             @else

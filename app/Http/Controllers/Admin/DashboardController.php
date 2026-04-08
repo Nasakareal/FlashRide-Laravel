@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\TarjetaTeleferico;
 use App\Models\TransitRoute;
 use App\Models\Trip;
 use App\Models\User;
@@ -12,12 +13,7 @@ use Spatie\Permission\Models\Role;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        return view('admin.dashboard');
-    }
-
-    public function publicDashboard()
+    private function getDashboardData(): array
     {
         $vehiclesCount = Vehicle::count();
 
@@ -32,21 +28,35 @@ class DashboardController extends Controller
         }
 
         $routesCount = TransitRoute::count();
-        $usersCount  = User::count();
+        $usersCount = User::count();
+        $tarjetasTelefericoCount = TarjetaTeleferico::count();
 
         $tripsToday = Trip::whereDate('created_at', now()->toDateString())->count();
 
-        $incidentsOpen   = 0;
+        $incidentsOpen = 0;
         $panicAlertsOpen = 0;
+        $ticketsOpenCount = 0;
 
-        return view('dashboard', compact(
+        return compact(
             'vehiclesCount',
             'driversCount',
             'routesCount',
             'usersCount',
+            'tarjetasTelefericoCount',
             'tripsToday',
             'incidentsOpen',
-            'panicAlertsOpen'
-        ));
+            'panicAlertsOpen',
+            'ticketsOpenCount'
+        );
+    }
+
+    public function index()
+    {
+        return view('admin.dashboard', $this->getDashboardData());
+    }
+
+    public function publicDashboard()
+    {
+        return view('dashboard', $this->getDashboardData());
     }
 }
