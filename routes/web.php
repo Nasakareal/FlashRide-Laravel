@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\TransitRouteController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\TarjetaTelefericoController;
 
+use App\Http\Controllers\Public\PreregistroTarjetaPublicController;
+
 // ------------------------------
 // Debug (útil mientras configuras)
 // ------------------------------
@@ -38,6 +40,11 @@ Route::get('/debug-path', fn () => response()->json([
 // ------------------------------
 Route::get('/', fn () => view('welcome'))->name('home');
 
+Route::prefix('teleferico')->name('teleferico.')->group(function () {
+    Route::get('/preregistro', [PreregistroTarjetaPublicController::class, 'create'])->name('preregistro.create');
+    Route::post('/preregistro', [PreregistroTarjetaPublicController::class, 'store'])->middleware('throttle:5,1')->name('preregistro.store');
+    Route::get('/preregistro/exito', [PreregistroTarjetaPublicController::class, 'success'])->name('preregistro.success');
+});
 
 // =======================================
 // AUTH (SIN /flashride) → /login, /logout

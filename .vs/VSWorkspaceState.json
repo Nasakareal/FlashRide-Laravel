@@ -4,11 +4,12 @@
     "\\app",
     "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\Admin",
+    "\\app\\Http\\Controllers\\Public",
+    "\\app\\Models",
     "\\resources",
     "\\resources\\views",
-    "\\routes"
+    "\\resources\\views\\teleferico"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\Admin\\DashboardController.php",
+  "SelectedNode": "\\resources\\views\\teleferico\\preregistro_success.blade.php",
   "PreviewInSolutionExplorer": false
 }

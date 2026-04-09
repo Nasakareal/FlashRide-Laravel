@@ -3,8 +3,6 @@
 
 @section('title', 'Bienvenido')
 
-{{-- Aquí NO metas <html><head>... ya lo pone el layout --}}
-
 @section('page-header')
   <div class="row align-items-center g-4 g-lg-5">
     <div class="col-lg-7">
@@ -36,11 +34,14 @@
             </a>
           @endif
         @else
-            <a href="{{ route('login') }}" class="btn btn-brand btn-lg px-4">
-              <i class="fa-regular fa-user me-2"></i> Iniciar sesión
-            </a>
-
+          <a href="{{ route('login') }}" class="btn btn-brand btn-lg px-4">
+            <i class="fa-regular fa-user me-2"></i> Iniciar sesión
+          </a>
         @endauth
+
+        <a href="{{ route('teleferico.preregistro.create') }}" class="btn btn-outline-primary btn-lg px-4">
+          <i class="fa-solid fa-id-card me-2"></i> Preregistro de tarjeta
+        </a>
 
         <a href="#servicios" class="btn btn-outline-secondary btn-lg px-4">
           Ver módulos
@@ -49,59 +50,80 @@
 
       <div class="mt-3 small" style="color: var(--muted);">
         <i class="fa-solid fa-circle-info me-2"></i>
-        Acceso restringido. Requiere credenciales autorizadas.
+        Acceso restringido para módulos internos. El preregistro de tarjeta está disponible al público.
       </div>
     </div>
 
     <div class="col-lg-5">
       <div class="card-soft p-4 p-lg-4">
         <div class="d-flex align-items-center gap-3 mb-3">
-          <div class="icon-pill"><i class="fa-solid fa-taxi"></i></div>
+          <div class="icon-pill"><i class="fa-solid fa-id-card"></i></div>
           <div>
-            <div class="fw-black" style="font-weight:900;">Estado del sistema</div>
-            <div class="small" style="color:var(--muted);">Vista informativa (demo)</div>
+            <div class="fw-black" style="font-weight:900;">Preregistro de tarjeta</div>
+            <div class="small" style="color:var(--muted);">Disponible para solicitud pública</div>
           </div>
         </div>
 
-        <div class="row g-3">
-          <div class="col-6">
-            <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
-              <div class="small" style="color:var(--muted);">Conductores</div>
-              <div class="h5 mb-0 fw-black" style="font-weight:900;">—</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
-              <div class="small" style="color:var(--muted);">Vehículos</div>
-              <div class="h5 mb-0 fw-black" style="font-weight:900;">—</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
-              <div class="small" style="color:var(--muted);">Viajes hoy</div>
-              <div class="h5 mb-0 fw-black" style="font-weight:900;">—</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
-              <div class="small" style="color:var(--muted);">Incidencias</div>
-              <div class="h5 mb-0 fw-black" style="font-weight:900;">—</div>
-            </div>
-          </div>
+        <div class="p-3 rounded-3 mb-3" style="background:#f9fafb; border:1px solid var(--border);">
+          <div class="small" style="color:var(--muted);">Proceso</div>
+          <div class="fw-semibold">Captura tus datos y registra tu solicitud antes de la entrega física.</div>
+        </div>
+
+        <div class="p-3 rounded-3 mb-3" style="background:#f9fafb; border:1px solid var(--border);">
+          <div class="small" style="color:var(--muted);">Estatus inicial</div>
+          <div class="fw-semibold">Tu preregistro se guarda como INACTIVA hasta la entrega de la tarjeta.</div>
+        </div>
+
+        <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid var(--border);">
+          <div class="small" style="color:var(--muted);">Validación</div>
+          <div class="fw-semibold">La CURP se revisa para evitar registros duplicados.</div>
         </div>
 
         <hr class="my-4">
 
-        <div class="small" style="color:var(--muted);">
-          <i class="fa-solid fa-lock me-2"></i>
-          Los módulos operativos se muestran al iniciar sesión.
-        </div>
+        <a href="{{ route('teleferico.preregistro.create') }}" class="btn btn-brand w-100">
+          <i class="fa-solid fa-arrow-right-to-bracket me-2"></i> Ir al preregistro
+        </a>
       </div>
     </div>
   </div>
 @endsection
 
 @section('content')
+  <section class="mb-5">
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-4">
+        <div class="card-soft p-4 h-100">
+          <div class="icon-pill mb-3"><i class="fa-solid fa-file-signature"></i></div>
+          <div class="fw-black mb-2" style="font-weight:900;">Preregistro en línea</div>
+          <div class="small" style="color:var(--muted);">
+            Los ciudadanos pueden capturar sus datos desde el sitio web antes de la inauguración.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card-soft p-4 h-100">
+          <div class="icon-pill mb-3"><i class="fa-solid fa-database"></i></div>
+          <div class="fw-black mb-2" style="font-weight:900;">Validación de CURP</div>
+          <div class="small" style="color:var(--muted);">
+            El sistema revisa si la CURP ya fue registrada para evitar duplicados.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card-soft p-4 h-100">
+          <div class="icon-pill mb-3"><i class="fa-solid fa-check-circle"></i></div>
+          <div class="fw-black mb-2" style="font-weight:900;">Activación posterior</div>
+          <div class="small" style="color:var(--muted);">
+            La tarjeta se activa únicamente al momento de su entrega oficial.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   {{-- MÓDULOS --}}
   <section id="servicios">
     <div class="row align-items-end mb-4">

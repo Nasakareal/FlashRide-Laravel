@@ -42,6 +42,39 @@ class TarjetaTelefericoController extends Controller
 
     public function store(Request $request)
     {
+        $input = $request->all();
+
+        $normalize = function ($value, $removeSpaces = false) {
+            $value = mb_strtoupper($value, 'UTF-8');
+            $value = strtr($value, [
+                'Á'=>'A','É'=>'E','Í'=>'I','Ó'=>'O','Ú'=>'U',
+                'á'=>'A','é'=>'E','í'=>'I','ó'=>'O','ú'=>'U',
+                'Ñ'=>'N','ñ'=>'N'
+            ]);
+            if ($removeSpaces) {
+                $value = str_replace(' ', '', $value);
+            }
+            return trim($value);
+        };
+
+        if (isset($input['nombres'])) {
+            $input['nombres'] = $normalize($input['nombres']);
+        }
+
+        if (isset($input['apellidos'])) {
+            $input['apellidos'] = $normalize($input['apellidos']);
+        }
+
+        if (isset($input['curp'])) {
+            $input['curp'] = $normalize($input['curp'], true);
+        }
+
+        if (isset($input['folio_tarjeta'])) {
+            $input['folio_tarjeta'] = $normalize($input['folio_tarjeta'], true);
+        }
+
+        $request->merge($input);
+
         $data = $request->validate([
             'nombres' => ['required', 'string', 'max:255'],
             'apellidos' => ['required', 'string', 'max:255'],
@@ -53,7 +86,7 @@ class TarjetaTelefericoController extends Controller
             'observaciones' => ['nullable', 'string'],
         ]);
 
-        $tarjetaTeleferico = TarjetaTeleferico::create($data);
+        TarjetaTeleferico::create($data);
 
         return redirect()
             ->route('admin.tarjetas-teleferico.index')
