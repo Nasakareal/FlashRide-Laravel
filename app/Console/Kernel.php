@@ -10,6 +10,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('clean:inactive-drivers')->everyFiveMinutes();
+        $schedule->command('rides:expire-pending')->everyMinute();
     }
 
     protected function commands()

@@ -25,7 +25,7 @@ use App\Http\Controllers\Admin\TransitRouteController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\TarjetaTelefericoController;
 
-use App\Http\Controllers\Public\PreregistroTarjetaPublicController;
+use App\Http\Controllers\PublicSite\PreregistroTarjetaPublicController;
 
 // ------------------------------
 // Debug (útil mientras configuras)

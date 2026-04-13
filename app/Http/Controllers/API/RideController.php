@@ -196,8 +196,8 @@ class RideController extends Controller
 
         if (($lat === null || $lng === null)) {
             $driver = User::where('id', $ride->driver_id)->first(['lat', 'lng']);
-            $lat = $driver?->lat;
-            $lng = $driver?->lng;
+            $lat = $driver ? $driver->lat : null;
+            $lng = $driver ? $driver->lng : null;
         }
 
         if ($lat === null || $lng === null) {
@@ -217,7 +217,10 @@ class RideController extends Controller
             return response()->json(['message' => 'Solo los conductores pueden ver viajes pendientes.'], 403);
         }
 
-        $rides = Ride::where('status', 'pending')->get();
+        $rides = Ride::query()
+            ->where('status', 'pending')
+            ->notExpiredPending()
+            ->get();
 
         return response()->json([
             'message' => 'Viajes pendientes disponibles',
@@ -249,6 +252,13 @@ class RideController extends Controller
 
             if (! $ride) {
                 return response()->json(['message' => 'Viaje no encontrado.'], 404);
+            }
+
+            if ($ride->hasExpiredPendingTimeout()) {
+                $ride->markAsCancelled();
+                $ride->save();
+
+                return response()->json(['message' => 'La solicitud expiró automáticamente.'], 409);
             }
 
             if ($ride->status !== 'pending' || $ride->driver_id) {
@@ -496,6 +506,7 @@ class RideController extends Controller
                 $q->where('passenger_id', $user->id)
                   ->orWhere('driver_id',  $user->id);
             })
+            ->notExpiredPending()
             ->whereNotIn('status', ['completed', 'cancelled'])
             ->whereNotIn('fase',   ['completado'])
             ->latest()
@@ -545,8 +556,7 @@ class RideController extends Controller
                     ], 409);
                 }
 
-                $ride->status = 'cancelled';
-                $ride->fase   = 'cancelado';
+                $ride->markAsCancelled();
                 $ride->save();
 
                 return response()->json([
